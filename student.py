@@ -1,6 +1,8 @@
 from tkinter import * 
 from tkinter import ttk
 from PIL import Image,ImageTk
+from tkinter import messagebox
+import mysql.connector
 
 # Making a class that initiates the backend application of the project
 class Student:
@@ -8,6 +10,21 @@ class Student:
         self.root = root
         self.root.geometry("1530x790+0+0")
         self.root.title("Face Recognition System")
+
+
+        ####Variables####
+
+        self.var_course = StringVar()
+        self.var_year = StringVar()
+        self.var_semester = StringVar()
+        self.var_level = StringVar()
+        self.var_sID = StringVar()
+        self.var_sName = StringVar()
+        self.var_gender = StringVar()
+        self.var_email = StringVar()
+        self.var_pName = StringVar()
+        self.var_address = StringVar()
+        self.var_pNum = StringVar()
 
         img = Image.open(r"C:\Users\sohan\Desktop\College\FYP\Facial_Recognition_System\App-Images\Header.jpg")
         img = img.resize((1300, 130), Image.ANTIALIAS)
@@ -43,7 +60,7 @@ class Student:
         dep_label = Label(Course_frame, text = "Course:", font = ("Sans Serif", 12), bg = "white")
         dep_label.grid(row = 0, column = 0, padx = 5, sticky = W)
 
-        dep_combo = ttk.Combobox(Course_frame, font = ("Sans Serif", 12), state = "readonly", width = 15)
+        dep_combo = ttk.Combobox(Course_frame, textvariable = self.var_course, font = ("Sans Serif", 12), state = "readonly", width = 15)
         dep_combo["values"] = ("Select Course", "BIT", "BBM", "IMBA")
         dep_combo.current(0)
         dep_combo.grid(row = 0, column = 1, padx = 2, pady = 5, sticky = W)
@@ -52,7 +69,7 @@ class Student:
         year_label = Label(Course_frame, text = "Year:", font = ("Sans Serif", 12), bg = "white")
         year_label.grid(row = 0, column = 2, padx = 5, sticky = W)
 
-        year_combo = ttk.Combobox(Course_frame, font = ("Sans Serif", 12), state = "readonly", width = 15)
+        year_combo = ttk.Combobox(Course_frame, textvariable = self.var_year, font = ("Sans Serif", 12), state = "readonly", width = 15)
         year_combo["values"] = ("Select Year", "2022-2023", "2023-2024", "2024-2025")
         year_combo.current(0)
         year_combo.grid(row = 0, column = 3, padx = 2, pady = 5, sticky = W)
@@ -61,7 +78,7 @@ class Student:
         semester_label = Label(Course_frame, text = "Semester:", font = ("Sans Serif", 12), bg = "white")
         semester_label.grid(row = 1, column = 0, padx = 5, sticky = W)
 
-        semester_combo = ttk.Combobox(Course_frame, font = ("Sans Serif", 12), state = "readonly", width = 15)
+        semester_combo = ttk.Combobox(Course_frame, textvariable = self.var_semester, font = ("Sans Serif", 12), state = "readonly", width = 15)
         semester_combo["values"] = ("Select Semester", "Fall", "Spring")
         semester_combo.current(0)
         semester_combo.grid(row = 1, column = 1, padx = 2, pady = 5, sticky = W)
@@ -70,7 +87,7 @@ class Student:
         level_label = Label(Course_frame, text = "Level:", font = ("Sans Serif", 12), bg = "white")
         level_label.grid(row = 1, column = 2, padx = 5, sticky = W)
 
-        level_combo = ttk.Combobox(Course_frame, font = ("Sans Serif", 12), state = "readonly", width = 15)
+        level_combo = ttk.Combobox(Course_frame, textvariable = self.var_level, font = ("Sans Serif", 12), state = "readonly", width = 15)
         level_combo["values"] = ("Select Level", "1", "2", "3", "4", "5", "6")
         level_combo.current(0)
         level_combo.grid(row = 1, column = 3, padx = 2, pady = 5, sticky = W)
@@ -85,58 +102,60 @@ class Student:
         #Student ID ############
         studentID_label = Label(class_student_frame, text = "Student ID:", font = ("Sans Serif", 12), bg = "white")
         studentID_label.grid(row = 0, column = 0, sticky = W)
-        studentID_entry = ttk.Entry(class_student_frame, width = 15, font = ("Sans Serif", 12))
+        studentID_entry = ttk.Entry(class_student_frame, textvariable= self.var_sID, width = 15, font = ("Sans Serif", 12))
         studentID_entry.grid(row = 0, column = 1, pady = 5, sticky = W)
 
         # Student Name
         studentName_label = Label(class_student_frame, text = "Student Name:", font = ("Sans Serif", 12), bg = "white")
         studentName_label.grid(row = 1, column = 0, sticky = W)
-        studentName_entry = ttk.Entry(class_student_frame, width = 15, font = ("Sans Serif", 12))
+        studentName_entry = ttk.Entry(class_student_frame, textvariable= self.var_sName, width = 15, font = ("Sans Serif", 12))
         studentName_entry.grid(row = 1, column = 1, pady = 5, sticky = W)
 
         #Gender ############
         studentGender_label = Label(class_student_frame, text = "Gender:", font = ("Sans Serif", 12), bg = "white")
         studentGender_label.grid(row = 2, column = 0, sticky = W)
-        studentGender_entry = ttk.Entry(class_student_frame, width = 15, font = ("Sans Serif", 12))
+        studentGender_entry = ttk.Entry(class_student_frame, textvariable= self.var_gender, width = 15, font = ("Sans Serif", 12))
         studentGender_entry.grid(row = 2, column = 1, pady = 5, sticky = W)
 
         #Email ##############
         studentEmail_label = Label(class_student_frame, text = "Email:", font = ("Sans Serif", 12), bg = "white")
         studentEmail_label.grid(row = 3, column = 0, sticky = W)
-        studentEmail_entry = ttk.Entry(class_student_frame, width = 15, font = ("Sans Serif", 12))
+        studentEmail_entry = ttk.Entry(class_student_frame, textvariable= self.var_email, width = 15, font = ("Sans Serif", 12))
         studentEmail_entry.grid(row = 3, column = 1, pady = 5, sticky = W)
 
         # Parents Name ############
         studentParentsName_label = Label(class_student_frame, text = "Parents Name:", font = ("Sans Serif", 12), bg = "white")
         studentParentsName_label.grid(row = 4, column = 0, sticky = W)
-        studentParentsName_entry = ttk.Entry(class_student_frame, width = 15, font = ("Sans Serif", 12))
+        studentParentsName_entry = ttk.Entry(class_student_frame, textvariable= self.var_pName, width = 15, font = ("Sans Serif", 12))
         studentParentsName_entry.grid(row = 4, column = 1, pady = 5, sticky = W)
 
         #Address 
         studentAddress_label = Label(class_student_frame, text = "Address:", font = ("Sans Serif", 12), bg = "white")
         studentAddress_label.grid(row = 0, column = 2, padx = 5,  sticky = W)
-        studentAddress_entry = ttk.Entry(class_student_frame, width = 15, font = ("Sans Serif", 12))
+        studentAddress_entry = ttk.Entry(class_student_frame, textvariable= self.var_address, width = 15, font = ("Sans Serif", 12))
         studentAddress_entry.grid(row = 0, column = 3, padx = 5, sticky = W)
 
         #Parents Number
         Pn_label = Label(class_student_frame, text = 'Parents Number: ', font = ("Sans Serif", 12), bg = "white")
         Pn_label.grid(row = 1, column = 2, padx = 5,  sticky = W)
-        Pn_entry = ttk.Entry(class_student_frame, width = 15, font = ("Sans Serif", 12))
+        Pn_entry = ttk.Entry(class_student_frame, textvariable= self.var_pNum, width = 15, font = ("Sans Serif", 12))
         Pn_entry.grid(row = 1, column = 3, padx = 5, sticky = W)
 
 
         #Radio Buttons
-        rbtn1 = ttk.Radiobutton(class_student_frame, text = "Take Photo Sample", value = "Yes")
+        self.var_radio1 = StringVar()
+        rbtn1 = ttk.Radiobutton(class_student_frame, textvariable= self.var_radio1, text = "Take Photo Sample", value = "Yes")
         rbtn1.grid(row = 6, column = 0)
 
-        rbtn2 = ttk.Radiobutton(class_student_frame, text = "No Photo Sample")
+        self.var_radio2 = StringVar()
+        rbtn2 = ttk.Radiobutton(class_student_frame, textvariable= self.var_radio2, text = "No Photo Sample")
         rbtn2.grid(row = 6, column = 1)
 
         # Buttons Frame
         btn_frame = Frame(class_student_frame, bd = 2, relief = RAISED, bg = "white")
         btn_frame.place(x = 3, y =200, width = 555, height = 37)
 
-        savebtn = Button(btn_frame, text = "Save", width = 13, font = ("Sans Serif", 12), bg = "aqua", fg = "black")
+        savebtn = Button(btn_frame, text = "Save", command = self.add_data, width = 13, font = ("Sans Serif", 12), bg = "aqua", fg = "black")
         savebtn.grid(row = 0, column = 0, padx= 5)
 
         updatebtn = Button(btn_frame, text = "Update", width = 13, font = ("Sans Serif", 12), bg = "aqua", fg = "black")
@@ -207,14 +226,14 @@ class Student:
         self.student_table.column("Parents Name", width = 100)
         self.student_table.column("Parents Number", width = 100)
 
-
-
-
-
         self.student_table.pack(fill = BOTH, expand = 1)
 
-
-
+        #### Function Declaration #####
+    def add_data(self):
+        if self.var_course.get() == "Select Course" or self.var_sName.get() == "" or self.var_sID.get() == "":
+            messagebox.showerror("Error", "All fields required", parent = self.root)
+        else:
+            pass
 
 
 

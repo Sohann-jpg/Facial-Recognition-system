@@ -1,6 +1,8 @@
 from tkinter import * 
 from tkinter import ttk
 from PIL import Image,ImageTk
+# from student import Student
+
 
 # Making a class that initiates the backend application of the project
 class Face_Recognition_System:
@@ -107,7 +109,20 @@ class Face_Recognition_System:
         b8_8 = Button(bg_img, text = "Exit", cursor = "hand2", font = ("open sans", 15), bg = "aqua", fg = "Black")
         b8_8.place(x = 890, y = 480, width = 220, height = 40)
 
+        # # ## Function buttons ##
+        # # def student_details(self):
+        # #     self.new_window = Toplevel(self.root)
+        # #     self.app = Student(self.new_window)
+
+        # def SD(self):
+        #     self.new_window = Toplevel(self.root)
+        #     self.app = Student(self.new_window)
+
+    
+
 if __name__ == "__main__":
     root = Tk()
     obj = Face_Recognition_System(root)
     root.mainloop()
+
+
