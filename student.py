@@ -114,8 +114,13 @@ class Student:
         #Gender ############
         studentGender_label = Label(class_student_frame, text = "Gender:", font = ("Sans Serif", 12), bg = "white")
         studentGender_label.grid(row = 2, column = 0, sticky = W)
-        studentGender_entry = ttk.Entry(class_student_frame, textvariable= self.var_gender, width = 15, font = ("Sans Serif", 12))
-        studentGender_entry.grid(row = 2, column = 1, pady = 5, sticky = W)
+        # studentGender_entry = ttk.Entry(class_student_frame, textvariable= self.var_gender, width = 15, font = ("Sans Serif", 12))
+        # studentGender_entry.grid(row = 2, column = 1, pady = 5, sticky = W)
+
+        gender_combo = ttk.Combobox(class_student_frame, textvariable = self.var_gender, font = ("Sans Serif", 12), state = "readonly", width = 13)
+        gender_combo["values"] = ("Male", "Female", "Non-Binary")
+        gender_combo.current(0)
+        gender_combo.grid(row = 2, column = 1, pady = 3, sticky = W)
 
         #Email ##############
         studentEmail_label = Label(class_student_frame, text = "Email:", font = ("Sans Serif", 12), bg = "white")
@@ -144,11 +149,9 @@ class Student:
 
         #Radio Buttons
         self.var_radio1 = StringVar()
-        rbtn1 = ttk.Radiobutton(class_student_frame, textvariable= self.var_radio1, text = "Take Photo Sample", value = "Yes")
+        rbtn1 = ttk.Radiobutton(class_student_frame, variable= self.var_radio1, text = "Take Photo Sample", value = "Yes")
         rbtn1.grid(row = 6, column = 0)
-
-        self.var_radio2 = StringVar()
-        rbtn2 = ttk.Radiobutton(class_student_frame, textvariable= self.var_radio2, text = "No Photo Sample")
+        rbtn2 = ttk.Radiobutton(class_student_frame, variable= self.var_radio1, text = "No Photo Sample")
         rbtn2.grid(row = 6, column = 1)
 
         # Buttons Frame
@@ -158,13 +161,13 @@ class Student:
         savebtn = Button(btn_frame, text = "Save", command = self.add_data, width = 13, font = ("Sans Serif", 12), bg = "aqua", fg = "black")
         savebtn.grid(row = 0, column = 0, padx= 5)
 
-        updatebtn = Button(btn_frame, text = "Update", width = 13, font = ("Sans Serif", 12), bg = "aqua", fg = "black")
+        updatebtn = Button(btn_frame, text = "Update", command = self.update_data, width = 13, font = ("Sans Serif", 12), bg = "aqua", fg = "black")
         updatebtn.grid(row = 0, column = 1, padx= 5)
 
-        deletebtn = Button(btn_frame, text = "Delete", width = 13, font = ("Sans Serif", 12), bg = "aqua", fg = "black")
+        deletebtn = Button(btn_frame, text = "Delete", command = self.delete_data, width = 13, font = ("Sans Serif", 12), bg = "aqua", fg = "black")
         deletebtn.grid(row = 0, column = 2, padx= 5)
 
-        resetbtn = Button(btn_frame, text = "Reset", width = 13, font = ("Sans Serif", 12), bg = "aqua", fg = "black")
+        resetbtn = Button(btn_frame, text = "Reset", command = self.reset_data, width = 13, font = ("Sans Serif", 12), bg = "aqua", fg = "black")
         resetbtn.grid(row = 0, column = 3, padx= 5)
 
         btn_frame1 = Frame(class_student_frame, bd = 2, relief = RAISED, bg = "white")
@@ -201,39 +204,195 @@ class Student:
         showallbtn.grid(row = 0, column = 4, padx = 2)
 
         # ===== Table Frame ====
-        table_frame = LabelFrame(Right_frame, bd = 2, bg = "white", relief = RIDGE)
+        table_frame = Frame(Right_frame, bd = 2, bg = "white", relief = RIDGE)
         table_frame.place(x = 5, y = 120, width = 565, height = 300)
     
         Scroll_x = ttk.Scrollbar(table_frame, orient = HORIZONTAL)
         Scroll_y = ttk.Scrollbar(table_frame, orient = VERTICAL)
-        self.student_table = ttk.Treeview(table_frame, column = ("Student ID", "Student Name", "Email", "Address", "Parents Name", "Parents Number"), xscrollcommand = Scroll_x.set, yscrollcommand = Scroll_y.set)
+        
+        self.student_table = ttk.Treeview(table_frame, column = ("Course", "Year", "Semester", "Level", "Student ID", "Student Name", "Gender", "Email", "Parents Name", "Address", "Parents Number", "Photo"), xscrollcommand = Scroll_x.set, yscrollcommand = Scroll_y.set)
         Scroll_x.pack(side = BOTTOM, fill = X)
         Scroll_y.pack(side = RIGHT, fill = Y)
         Scroll_x.config(command = self.student_table.xview)
         Scroll_y.config(command = self.student_table.yview)
+        self.student_table.heading("Course", text = "Course")
+        self.student_table.heading("Year", text = "Year")
+        self.student_table.heading("Semester", text = "Semester")
+        self.student_table.heading("Level", text = "Level")
         self.student_table.heading("Student ID", text = "Student ID")
         self.student_table.heading("Student Name", text = "Student Name")
+        self.student_table.heading("Gender", text = "Gender")
         self.student_table.heading("Email", text = "Email")
-        self.student_table.heading("Address", text = "Address")
         self.student_table.heading("Parents Name", text = "Parents Name")
+        self.student_table.heading("Address", text = "Address")
         self.student_table.heading("Parents Number", text = "Parents Number")
+        self.student_table.heading("Photo", text = "Photo Sample Status")
         self.student_table["show"] = "headings"
 
+        self.student_table.column("Course", width = 100)
+        self.student_table.column("Year", width = 100)
+        self.student_table.column("Semester", width = 100)
+        self.student_table.column("Level", width = 100)
         self.student_table.column("Student ID", width = 100)
         self.student_table.column("Student Name", width = 100)
+        self.student_table.column("Gender", width = 100)
         self.student_table.column("Email", width = 100)
-        self.student_table.column("Address", width = 100)
         self.student_table.column("Parents Name", width = 100)
+        self.student_table.column("Address", width = 100)
         self.student_table.column("Parents Number", width = 100)
-
+        self.student_table.column("Photo", width = 100)
         self.student_table.pack(fill = BOTH, expand = 1)
+        self.student_table.bind("<ButtonRelease>", self.get_cursor)
+        self.fetch_data()
 
         #### Function Declaration #####
     def add_data(self):
         if self.var_course.get() == "Select Course" or self.var_sName.get() == "" or self.var_sID.get() == "":
             messagebox.showerror("Error", "All fields required", parent = self.root)
         else:
-            pass
+            try:
+                conn = mysql.connector.connect(host = "localhost", username = "root", password = "PunnSxG@2806", database = "face_recognition")
+                my_cursor = conn.cursor()
+                my_cursor.execute("insert into details values(%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)",(
+                                                                                                    self.var_course.get(),
+                                                                                                    self.var_year.get(),
+                                                                                                    self.var_semester.get(),
+                                                                                                    self.var_level.get(),
+                                                                                                    self.var_sID.get(),
+                                                                                                    self.var_sName.get(),
+                                                                                                    self.var_gender.get(),
+                                                                                                    self.var_email.get(),
+                                                                                                    self.var_pName.get(),
+                                                                                                    self.var_address.get(),
+                                                                                                    self.var_pNum.get(),
+                                                                                                    self.var__radio1.get()                                                                                       
+                                                                                                ))
+                conn.commit()
+                self.fetch_data()
+                conn.close()
+                messagebox.showinfo("success","student details has been added successfully", parent = self.root)
+            
+            except Exception as es:
+                messagebox.showerror("Error", f"Due to: {str(es)}", parent = self.root)
+
+
+#### Fetching data into the application table ###
+
+    def fetch_data(self):
+        conn = mysql.connector.connect(host = "localhost", username = "root", password = "PunnSxG@2806", database = "face_recognition")
+        my_cursor = conn.cursor()
+        my_cursor.execute("select * from details")
+        data = my_cursor.fetchall()
+
+        if len(data) != 0:
+            self.student_table.delete(*self.student_table.get_children())
+            for i in data:
+                self.student_table.insert("", END, values = i)
+            conn.commit()
+        conn.close()
+
+### Get cursor ###
+
+    def get_cursor(self, event = ""):
+        cursor_focus = self.student_table.focus()
+        content = self.student_table.item(cursor_focus)
+        data = content["values"]
+
+        self.var_course.set(data[0])
+        self.var_year.set(data[1])
+        self.var_semester.set(data[2])
+        self.var_level.set(data[3])
+        self.var_sID.set(data[4])
+        self.var_sName.set(data[5])
+        self.var_gender.set(data[6])
+        self.var_email.set(data[7])
+        self.var_pName.set(data[8])
+        self.var_address.set(data[9])
+        self.var_pNum.set(data[10])
+        self.var__radio1.set(data[11])
+
+##### updating information ####
+    def update_data(self):
+        if self.var_course.get() == "Select Course" or self.var_sName.get() == "" or self.var_sID.get() == "":
+            messagebox.showerror("Error", "All fields required", parent = self.root)
+        else:
+            try:
+                Update = messagebox.askyesno("update", "Do you want to update the data?", parent = self.root)
+                if Update > 0:
+                    conn = mysql.connector.connect(host = "localhost", username = "root", password = "PunnSxG@2806", database = "face_recognition")
+                    my_cursor = conn.cursor()
+                    my_cursor.execute("Update details set course = %s, year = %s, semester = %s, level = %s, student_name = %s, gender = %s, email = %s, parents_name = %s, address = %s, parents_number = %s, photo_sample = %s, where student_id = %s",(
+                                                                                                                                                                                                                                self.var_course.get(),
+                                                                                                                                                                                                                                self.var_year.get(),
+                                                                                                                                                                                                                                self.var_semester.get(),
+                                                                                                                                                                                                                                self.var_level.get(),                                                                                                                                                                                                                     
+                                                                                                                                                                                                                                self.var_sName.get(),
+                                                                                                                                                                                                                                self.var_email.get(),
+                                                                                                                                                                                                                                self.var_pName.get(),
+                                                                                                                                                                                                                                self.var_address.get(),
+                                                                                                                                                                                                                                self.var_pNum.get(),
+                                                                                                                                                                                                                                self.var_radio1.get(),                                                                                                                                                                                                                           
+                                                                                                                                                                                                                                self.var_sID.get()
+                                                                                                                                                                                                                              ))
+                else:
+                    if not Update:
+                        return
+                messagebox.showinfo("Success", "Student details successfully updated", parent = self.root)
+                conn.commit()
+                self.fetch_data()
+                conn.close()
+            except Exception as es:
+                messagebox.showerror("Error", f"Due to: {str(es)}", parent = self.root)
+
+
+    ### Delete Function ###
+    def delete_data(self):
+        if self.var_sID.get() == "":
+            messagebox.showerror("Error", "Student ID required", parent = self.root)
+        else:
+            try:
+                delete = messagebox.askyesno("Student Delete Page", "Do you really want to delete this entry?", parent = self.root)
+                if delete > 0:
+                    conn = mysql.connector.connect(host = "localhost", username = "root", password = "PunnSxG@2806", database = "face_recognition")
+                    my_cursor = conn.cursor()
+                    sql = "delete from details where student_id = %s"
+                    val = (self.var_sID.get(),)
+                    my_cursor.execute(sql, val)
+                else:
+                    if not delete:
+                        return
+                conn.commit()
+                self.fetch_data()
+                conn.close()
+                messagebox.showinfo("Delete", "Successfully deleted entry", parent = self.root)
+            except Exception as es:
+                messagebox.showerror("Error", f"Due to: {str(es)}", parent = self.root)
+
+######## Reset Function ########
+    def reset_data(self):
+        self.var_course.set("Select Course")
+        self.var_semester.set("Select Semester")
+        self.var_year.set("Select Year")
+        self.var_level.set("Select Level")
+        self.var_sID.set("")
+        self.var_sName.set("")
+        self.var_gender.set("Select Gender")
+        self.var_email.set("")
+        self.var_pName.set("")
+        self.var_address.set("")
+        self.var_pNum.set("")
+        self.var_radio1.set("")
+
+
+
+
+
+
+
+
+
+
+
 
 
 
