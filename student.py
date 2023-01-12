@@ -3,6 +3,7 @@ from tkinter import ttk
 from PIL import Image,ImageTk
 from tkinter import messagebox
 import mysql.connector
+import cv2 
 
 # Making a class that initiates the backend application of the project
 class Student:
@@ -25,6 +26,7 @@ class Student:
         self.var_pName = StringVar()
         self.var_address = StringVar()
         self.var_pNum = StringVar()
+        self.var_radio1 = StringVar()
 
         img = Image.open(r"C:\Users\sohan\Desktop\College\FYP\Facial_Recognition_System\App-Images\Header.jpg")
         img = img.resize((1300, 130), Image.ANTIALIAS)
@@ -174,7 +176,7 @@ class Student:
         btn_frame1.place(x = 3, y =235, width = 555, height = 37)
 
 
-        takephbtn = Button(btn_frame1, text = "Take photo sample", width = 29, font = ("Sans Serif", 12), bg = "aqua", fg = "black")
+        takephbtn = Button(btn_frame1, command = self.generate_dataset, text = "Take photo sample", width = 29, font = ("Sans Serif", 12), bg = "aqua", fg = "black")
         takephbtn.grid(row = 0, column = 2)
 
         updatephbtn = Button(btn_frame1, text = "Update photo sample", width = 29, font = ("Sans Serif", 12), bg = "aqua", fg = "black")
@@ -265,7 +267,7 @@ class Student:
                                                                                                     self.var_pName.get(),
                                                                                                     self.var_address.get(),
                                                                                                     self.var_pNum.get(),
-                                                                                                    self.var__radio1.get()                                                                                       
+                                                                                                    self.var_radio1.get()                                                                                       
                                                                                                 ))
                 conn.commit()
                 self.fetch_data()
@@ -309,7 +311,7 @@ class Student:
         self.var_pName.set(data[8])
         self.var_address.set(data[9])
         self.var_pNum.set(data[10])
-        self.var__radio1.set(data[11])
+        self.var_radio1.set(data[11])
 
 ##### updating information ####
     def update_data(self):
@@ -321,12 +323,13 @@ class Student:
                 if Update > 0:
                     conn = mysql.connector.connect(host = "localhost", username = "root", password = "PunnSxG@2806", database = "face_recognition")
                     my_cursor = conn.cursor()
-                    my_cursor.execute("Update details set course = %s, year = %s, semester = %s, level = %s, student_name = %s, gender = %s, email = %s, parents_name = %s, address = %s, parents_number = %s, photo_sample = %s, where student_id = %s",(
+                    my_cursor.execute("Update details set course = %s, year = %s, semester = %s, level = %s, student_name = %s, gender = %s, email = %s, parents_name = %s, address = %s, parents_number = %s, photo_sample = %s where student_id = %s",(
                                                                                                                                                                                                                                 self.var_course.get(),
                                                                                                                                                                                                                                 self.var_year.get(),
                                                                                                                                                                                                                                 self.var_semester.get(),
                                                                                                                                                                                                                                 self.var_level.get(),                                                                                                                                                                                                                     
                                                                                                                                                                                                                                 self.var_sName.get(),
+                                                                                                                                                                                                                                self.var_gender.get(),
                                                                                                                                                                                                                                 self.var_email.get(),
                                                                                                                                                                                                                                 self.var_pName.get(),
                                                                                                                                                                                                                                 self.var_address.get(),
@@ -385,20 +388,76 @@ class Student:
 
 
 
+#### Generating dataset and taking photo Sample #######
 
+    def generate_dataset(self):
+        if self.var_course.get() == "Select Course" or self.var_sName.get() == "" or self.var_sID.get() == "":
+            messagebox.showerror("Error", "All fields required", parent = self.root)
+        else:
+            try:
+                conn = mysql.connector.connect(host = "localhost", username = "root", password = "PunnSxG@2806", database = "face_recognition")
+                my_cursor = conn.cursor()
+                my_cursor.execute("select * from details")
+                myresult = my_cursor.fetchall()
+                id = 0
+                for x in myresult:
+                    id += 1
+                my_cursor.execute("Update details set course = %s, year = %s, semester = %s, level = %s, student_name = %s, gender = %s, email = %s, parents_name = %s, address = %s, parents_number = %s, photo_sample = %s where student_id = %s",(
+                                                                                                                                                                                                                                self.var_course.get(),
+                                                                                                                                                                                                                                self.var_year.get(),
+                                                                                                                                                                                                                                self.var_semester.get(),
+                                                                                                                                                                                                                                self.var_level.get(),                                                                                                                                                                                                                     
+                                                                                                                                                                                                                                self.var_sName.get(),
+                                                                                                                                                                                                                                self.var_gender.get(),
+                                                                                                                                                                                                                                self.var_email.get(),
+                                                                                                                                                                                                                                self.var_pName.get(),
+                                                                                                                                                                                                                                self.var_address.get(),
+                                                                                                                                                                                                                                self.var_pNum.get(),
+                                                                                                                                                                                                                                self.var_radio1.get(),                                                                                                                                                                                                                           
+                                                                                                                                                                                                                                self.var_sID.get() == +1
+                                                                                                                                                                                                                            ))
+                conn.commit()
+                self.fetch_data()
+                self.reset_data()
+                conn.close()
 
+                
+##### Loading haarcascade library from OPENCV
 
+                face_classifier = cv2.CascadeClassifier("haarcascade_frontalface_default.xml")
 
+                def face_cropped(img):
+                    gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+                    faces = face_classifier.detectMultiScale(gray, 1.3, 5)
 
+                    #### Scaling factor = 1.3
+                    ### Minimun neighnor = 5
+                    for (x, y, w, h) in faces:
+                        face_cropped = img[y:y+h, x:x+w]
+                        return face_cropped
+                    
+                cap = cv2.VideoCapture(0)
+                img_id = 0 
+                while True:
+                    ret, my_frame = cap.read()
+                    if face_cropped(my_frame) is not None:
+                        img_id += 1
+                        face = cv2.resize(face_cropped(my_frame), (450, 450))
+                        face = cv2.cvtColor(face, cv2.COLOR_BGR2GRAY)
+                        file_name_path = "data/user." + str(id) + "." + str(img_id) + ".jpg"
+                        cv2.imwrite(file_name_path, face)
+                        cv2.putText(face, str(img_id), (50,50), cv2.FONT_HERSHEY_COMPLEX, 2, (0,255,230), 2)
+                        cv2.imshow("Cropped Face", face)
 
-
-
-
-
-
-
-
-
+                    if cv2.waitKey(1) == 13 or int(img_id) == 100:
+                        break
+                cap.release()
+                cv2.destroyAllWindows()
+                messagebox.showinfo("Result", "Generating dataset completed successfully")
+                
+            except Exception as es:
+                messagebox.showerror("Error", f"Due to: {str(es)}", parent = self.root)
+                
 
 if __name__ == "__main__":
     root = Tk()
