@@ -28,14 +28,14 @@ class Student:
         self.var_pNum = StringVar()
         self.var_radio1 = StringVar()
 
-        img = Image.open(r"C:\Users\sohan\Desktop\College\FYP\Facial_Recognition_System\App-Images\Header.jpg")
+        img = Image.open(r"App-Images\Header.jpg")
         img = img.resize((1300, 130), Image.ANTIALIAS)
         self.photoimg = ImageTk.PhotoImage(img)
         f_lbl = Label(self.root, image = self.photoimg)
         f_lbl.place(x= -1, y=0)
 
         # Adding a background image to the application software
-        img1 = Image.open(r"C:\Users\sohan\Desktop\College\FYP\Facial_Recognition_System\App-Images\Background.webp")
+        img1 = Image.open(r"App-Images\Background.webp")
         img1 = img1.resize((1530, 710), Image.ANTIALIAS)
         self.photoimg1 = ImageTk.PhotoImage(img1)
         bg_img = Label(self.root, image = self.photoimg1)
@@ -386,7 +386,14 @@ class Student:
         self.var_pNum.set("")
         self.var_radio1.set("")
 
-
+# ===This function updates MySQL database with student information. 
+# The function first checks if certain fields (course, student name, and student ID) are filled out, 
+# and if not, it displays an error message. Then, it attempts to connect to MySQL database called "face_recognition" 
+# using the specified host, username, and password. It creates a cursor and executes a query to select all entries from the "details" table.
+# It then loops through the results to increase a variable "id" by 1. 
+# Finally, it uses the cursor to execute an update query to update the "details" table with the student information from the various variables
+# (course, year, semester, level, student name, gender, email, parents name, address, parents number, and photo sample) 
+# using the student ID as the primary key. ===
 
 #### Generating dataset and taking photo Sample #######
 
@@ -421,7 +428,14 @@ class Student:
                 self.reset_data()
                 conn.close()
 
-                
+# === This section of the code uses OpenCV to capture video from the device's camera and detect faces in the frames 
+# using the pre-trained Haar cascade classifier "haarcascade_frontalface_default.xml". 
+# The detected faces are then cropped from the frames and resized to 450x450 pixels. 
+# The cropped and resized images are then saved to the "data" folder with filenames in the format "user.id.img_id.jpg".
+#  The code continues to capture and save images until the user presses the enter key or 100 images have been captured. 
+#  A message box is displayed at the end of the process to confirm that the dataset has been generated successfully. 
+#  If an exception occurs, an error message box is displayed with the specific error message. ===
+
 ##### Loading haarcascade library from OPENCV
 
                 face_classifier = cv2.CascadeClassifier("haarcascade_frontalface_default.xml")
@@ -444,7 +458,7 @@ class Student:
                         img_id += 1
                         face = cv2.resize(face_cropped(my_frame), (450, 450))
                         face = cv2.cvtColor(face, cv2.COLOR_BGR2GRAY)
-                        file_name_path = "data/user." + str(id) + "." + str(img_id) + ".jpg"
+                        file_name_path = "Data/user." + str(id) + "." + str(img_id) + ".jpg"
                         cv2.imwrite(file_name_path, face)
                         cv2.putText(face, str(img_id), (50,50), cv2.FONT_HERSHEY_COMPLEX, 2, (0,255,230), 2)
                         cv2.imshow("Cropped Face", face)
@@ -454,7 +468,7 @@ class Student:
                 cap.release()
                 cv2.destroyAllWindows()
                 messagebox.showinfo("Result", "Generating dataset completed successfully")
-                
+
             except Exception as es:
                 messagebox.showerror("Error", f"Due to: {str(es)}", parent = self.root)
                 
