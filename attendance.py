@@ -147,12 +147,12 @@ class Attendance:
         self.AttendanceReportTable.pack(fill = BOTH, expand = 1)
         self.AttendanceReportTable.bind("<ButtonRelease>", self.get_cursor)
 
-    # ===== Fetching Data =====
+        # ===== Fetching Data =====
     def fetch_data(self, rows):
         self.AttendanceReportTable.delete(*self.AttendanceReportTable.get_children())
         for i in rows:
             self.AttendanceReportTable.insert("", END, values = i)
-    # importCSV
+        # importCSV
     def importCSV(self):
         global mydata
         mydata.clear()
@@ -162,8 +162,7 @@ class Attendance:
             for i in csvread:
                 mydata.append(i)
             self.fetch_data(mydata)   
-
-    # export CSV
+        # export CSV
     def exportCSV(self):
         try:
             if len(mydata) < 1:
@@ -177,7 +176,6 @@ class Attendance:
                 messagebox.showinfo("Success", "Data exported successfully to " + os.path.basename(fln))
         except Exception as es:
                 messagebox.showerror("Error", f"Due to: {str(es)}", parent = self.root)
-
 
     def get_cursor(self, event = ""):
         cursor_row = self.AttendanceReportTable.focus()
@@ -197,25 +195,7 @@ class Attendance:
         self.var_atten_time.set("")
         self.var_atten_course.set("")
         self.var_atten_status.set("")
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+        # ===== Fetching Data =====
 
 if __name__ == "__main__":
     root = Tk()
