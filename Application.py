@@ -68,7 +68,7 @@ class Login(tk.Frame):
         self.txtpass.place(x = 50, y = 300, width = 200)
 
         # ===== Buttons
-        loginbutton = tk.Button(self.frame, text = "Login", command = lambda:  controller.show_frame(Main), font = ("Helvetica", 10), bd = 2, relief = RIDGE, bg = "#0a384c", fg = 'white',activebackground = '#0a384c')
+        loginbutton = tk.Button(self.frame, text = "Login", command=lambda: self.login(controller), font = ("Helvetica", 10), bd = 2, relief = RIDGE, bg = "#0a384c", fg = 'white',activebackground = '#0a384c')
         loginbutton.place(x = 100, y = 350, width = 120, height = 35)
         registerbutton = tk.Button(self.frame, text = "Register", command = lambda:  controller.show_frame(Register), font = ("Helvetica", 10), borderwidth= 0, bg = "#0a384c", activebackground = '#0a384c')
         registerbutton.place(x = -15, y = 390, width = 120)
@@ -95,8 +95,8 @@ class Login(tk.Frame):
             if row == None:
                 messagebox.showerror("Error", "Invalid username or password")
             else:
-                # self.new_window = Toplevel(self.root)
-                controller.show_frame(Main)
+                command = lambda: controller.show_frame(Main)
+                command()
             conn.commit()
             conn.close()
 
