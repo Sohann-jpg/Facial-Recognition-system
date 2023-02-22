@@ -64,7 +64,7 @@ class Login(tk.Frame):
 
         password = tk.Label(self.frame, text = "Password", font = ("Helvetica", 15), fg = "white", bg = "#0a384c")
         password.place(x = 48, y = 270)
-        self.txtpass = ttk.Entry(self.frame, font = ("Helvetica", 20))
+        self.txtpass = ttk.Entry(self.frame, show = "*", font = ("Helvetica", 20))
         self.txtpass.place(x = 50, y = 300, width = 200)
 
         # ===== Buttons
@@ -395,8 +395,8 @@ class Main(tk.Frame):
         b8 = tk.Button(bg_img, image = self.photoimg9)
         b8.place(x = 620, y = 300, width = 220, height = 180)
 
-        # Text: Exit
-        b8_8 = tk.Button(bg_img, text = "Exit", cursor = "hand2", font = ("open sans", 15), 
+        # Text: Log Out
+        b8_8 = tk.Button(bg_img, text = "Log Out", command=lambda: controller.show_frame(Login), cursor = "hand2", font = ("open sans", 15), 
         bg = "#117c9d", fg = "Black")
         b8_8.place(x = 620, y = 480, width = 220, height = 40)
         # ===== Menu Section =====
