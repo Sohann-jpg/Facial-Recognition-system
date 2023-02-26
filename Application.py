@@ -47,9 +47,9 @@ class Login(tk.Frame):
 
         self.frame = Frame(bg_img, bg = '#0a384c')
         self.frame.place(x = 480, y = 70, width = 340, height = 450)
-        img1 = Image.open("App-Images/user.png")
-        img1 = img1.resize((100, 100), Image.ANTIALIAS)
-        self.photoimage1 = ImageTk.PhotoImage(img1)
+        user_img = Image.open("App-Images/user.png")
+        user_img = user_img.resize((100, 100), Image.ANTIALIAS)
+        self.photoimage1 = ImageTk.PhotoImage(user_img)
         lblimg1 = tk.Label(image = self.photoimage1, bg = "#117c9d", borderwidth = 1)
         lblimg1.place(x = 610, y = 220, width = 100, height = 100)
 
@@ -100,8 +100,8 @@ class Login(tk.Frame):
             conn.commit()
             conn.close()
 
-#  sQuestion #sAnswer
-# ===== Function decleration for reset password =====
+    #  sQuestion #sAnswer
+    # ===== Function decleration for reset password =====
     def reset_pass(self):
         if self.combo_security_Q.get() == "Select":
             messagebox.showerror("Error", "Please select your security question", parent = self.root2)
@@ -587,34 +587,34 @@ class Student(tk.Frame):
 
 
         # Right label frame
-        Right_frame = tk.LabelFrame(main_frame, bd = 2, bg = "white", relief = RAISED, text = "Student Details", font = ("Sans Serif", 12))
+        Right_frame = tk.LabelFrame(main_frame, bd = 2, bg = "white", relief = RAISED, text = "Student Information", font = ("Sans Serif", 12))
         Right_frame.place(x = 630, y = 10, width = 580, height = 450)
 
-        #=====Search Frame=====
-        search_frame = tk.LabelFrame(Right_frame, bd = 2, bg = "white", relief = RIDGE, text = "Search", font = ("Sans Serif", 12))
-        search_frame.place(x = 5, y = 10, width = 565, height = 70)
-        search_label = tk.Label(search_frame, text = "Search By: ", font = ("Sans Serif", 12), bg = "white")
-        search_label.grid(row = 0, column = 0, padx = 5,  sticky = W)
+        # #=====Search Frame=====
+        # search_frame = tk.LabelFrame(Right_frame, bd = 2, bg = "white", relief = RIDGE, text = "Search", font = ("Sans Serif", 12))
+        # search_frame.place(x = 5, y = 10, width = 565, height = 70)
+        # search_label = tk.Label(search_frame, text = "Search By: ", font = ("Sans Serif", 12), bg = "white")
+        # search_label.grid(row = 0, column = 0, padx = 5,  sticky = W)
 
-        # Combo Boxes
-        search_combo = ttk.Combobox(search_frame, font = ("Sans Serif", 12), state = "readonly", width = 10)
-        search_combo["values"] = ("Select", "Name", "ID", "Email")
-        search_combo.current(0)
-        search_combo.grid(row = 0, column = 1, padx = 2, pady = 5, sticky = W)
+        # # Combo Boxes
+        # search_combo = ttk.Combobox(search_frame, font = ("Sans Serif", 12), state = "readonly", width = 10)
+        # search_combo["values"] = ("Select", "Name", "ID", "Email")
+        # search_combo.current(0)
+        # search_combo.grid(row = 0, column = 1, padx = 2, pady = 5, sticky = W)
 
-        # Entry Fields
-        search_entry = ttk.Entry(search_frame, width = 15, font = ("Sans Serif", 12))
-        search_entry.grid(row = 0, column = 2, pady = 5, sticky = W)
+        # # Entry Fields
+        # search_entry = ttk.Entry(search_frame, width = 15, font = ("Sans Serif", 12))
+        # search_entry.grid(row = 0, column = 2, pady = 5, sticky = W)
 
-        # Buttons
-        searchbtn = tk.Button(search_frame, text = "Search", width = 10, font = ("Sans Serif", 12), bg = "#117c9d", fg = "black")
-        searchbtn.grid(row = 0, column = 3, padx = 2)
-        showallbtn = tk.Button(search_frame, text = "Show All", width = 10, font = ("Sans Serif", 12), bg = "#117c9d", fg = "black")
-        showallbtn.grid(row = 0, column = 4, padx = 2)
+        # # Buttons
+        # searchbtn = tk.Button(search_frame, text = "Search", width = 10, font = ("Sans Serif", 12), bg = "#117c9d", fg = "black")
+        # searchbtn.grid(row = 0, column = 3, padx = 2)
+        # showallbtn = tk.Button(search_frame, text = "Show All", width = 10, font = ("Sans Serif", 12), bg = "#117c9d", fg = "black")
+        # showallbtn.grid(row = 0, column = 4, padx = 2)
 
         # ===== Table Frame ====
         table_frame = tk.Frame(Right_frame, bd = 2, bg = "white", relief = RIDGE)
-        table_frame.place(x = 5, y = 120, width = 565, height = 300)
+        table_frame.place(x = 5, y = 10, width = 565, height = 420)
 
         # ===== Scroll bar =====
         Scroll_x = ttk.Scrollbar(table_frame, orient = HORIZONTAL)
@@ -1082,7 +1082,7 @@ class Attendance(tk.Frame):
         # importCSV
     def importCSV(self):
         global mydata
-        mydata.clear()
+        mydata = []
         fln = filedialog.askopenfilename(initialdir = os.getcwd(), title = "Open CSV", filetypes = (("CSV FILE", "*.csv"), ("All File", "*.*")), parent = self)
         with open(fln) as myfile:
             csvread = csv.reader(myfile, delimiter = ",")
@@ -1091,6 +1091,7 @@ class Attendance(tk.Frame):
             self.fetch_data(mydata)   
         # export CSV
     def exportCSV(self):
+        global mydata
         try:
             if len(mydata) < 1:
                 messagebox.showerror("Error", "No data to export", parent = self)
@@ -1204,9 +1205,9 @@ class Face_Recognition(tk.Frame):
                 c = "," . join(c)
 
                 if confidence > 77 :
-                    cv2.putText(img, f"ID:{i}"(x, y - 55), cv2.FONT_ITALIC, 0.8, (255,255,255), 2)
-                    cv2.putText(img, f"Name:{n}"(x, y - 30), cv2.FONT_ITALIC, 0.8, (255,255,255), 2)
-                    cv2.putText(img, f"Course:{c}"(x, y - 5), cv2.FONT_ITALIC, 0.8, (255,255,255), 2)
+                    cv2.putText(img, f"ID:{i}", (x, y - 55), cv2.FONT_ITALIC, 0.8, (255,255,255), 2)
+                    cv2.putText(img, f"Name:{n}", (x, y - 30), cv2.FONT_ITALIC, 0.8, (255,255,255), 2)
+                    cv2.putText(img, f"Course:{c}", (x, y - 5), cv2.FONT_ITALIC, 0.8, (255,255,255), 2)
                     self.mark_attendance(n, i, c)
                     #Anti-spoofing code
                     if(self.is_live(gray_image[y:y + h, x: x + w])):
