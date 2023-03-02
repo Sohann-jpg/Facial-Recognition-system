@@ -3,10 +3,6 @@ from tkinter import ttk
 from tkinter import * 
 import tkinter
 from PIL import Image,ImageTk
-from student import Student
-from train import Train
-from face_recognition import Face_Recognition
-from attendance import Attendance
 import mysql.connector
 import cv2 
 from tkinter import messagebox
@@ -16,7 +12,9 @@ import csv
 from tkinter import filedialog
 from time import strftime
 from datetime import datetime
+from tkcalendar import DateEntry
 
+ 
 class Login(tk.Frame):
     def __init__(self, parent, controller):
         tk.Frame.__init__(self, parent)
@@ -28,6 +26,7 @@ class Login(tk.Frame):
         self.var_secA = StringVar()
         self.var_pass = StringVar()
         self.var_conpass = StringVar()
+        
     # Adding a header image to the application software
         img = Image.open(r"App-Images\Header.jpg")
         img = img.resize((1300, 130), Image.ANTIALIAS)
@@ -68,9 +67,9 @@ class Login(tk.Frame):
         self.txtpass.place(x = 50, y = 300, width = 200)
 
         # ===== Buttons
-        loginbutton = tk.Button(self.frame, text = "Login", command=lambda: self.login(controller), font = ("Helvetica", 10), bd = 2, relief = RIDGE, bg = "#0a384c", fg = 'white',activebackground = '#0a384c')
+        loginbutton = tk.Button(self.frame, text = "Login", command = lambda: self.login(controller), font = ("Helvetica", 10), bd = 2, relief = RIDGE, bg = "#0a384c", fg = 'white',activebackground = '#0a384c')
         loginbutton.place(x = 100, y = 350, width = 120, height = 35)
-        registerbutton = tk.Button(self.frame, text = "Register", command = lambda:  controller.show_frame(Register), font = ("Helvetica", 10), borderwidth= 0, bg = "#0a384c", activebackground = '#0a384c')
+        registerbutton = tk.Button(self.frame, text = "Register", command = lambda: controller.show_frame(Register), font = ("Helvetica", 10), borderwidth= 0, bg = "#0a384c", activebackground = '#0a384c')
         registerbutton.place(x = -15, y = 390, width = 120)
         forgotbutton = tk.Button(self.frame, text = "Forgot Password", command = self.forgot_password, font = ("Helvetica", 10), borderwidth= 0, bg = "#0a384c", activebackground = '#0a384c')
         forgotbutton.place(x = 10, y = 420, width = 120)
@@ -183,19 +182,19 @@ class Register(tk.Frame):
         self.var_pass = StringVar()
         self.var_conpass = StringVar()
 
-    # Adding a header image to the application software
+        # Adding a header image to the application software
         img = Image.open(r"App-Images\Header.jpg")
         img = img.resize((1300, 130), Image.ANTIALIAS)
         self.photoimg = ImageTk.PhotoImage(img)
         f_lbl = tk.Label(self, image = self.photoimg)
         f_lbl.place(x= -1, y=0)
-    # Adding a background image to the application software
+        # Adding a background image to the application software
         img1 = Image.open(r"App-Images\Background.webp")
         img1 = img1.resize((1530, 710), Image.ANTIALIAS)
         self.photoimg1 = ImageTk.PhotoImage(img1)
         bg_img = tk.Label(self, image = self.photoimg1)
         bg_img.place(x = 0, y = 130, width = 1530, height = 710)
-   # Adding a text in the application
+        # Adding a text in the application
         title_lbl = tk.Label(bg_img,text = "New User? Register", font = ("open sans", 30), 
         bg = "white", fg = "Black")
         title_lbl.place(x = -100, y = 0, width = 1530, height = 45)
@@ -378,27 +377,43 @@ class Main(tk.Frame):
         font = ("open sans", 15), bg = "#117c9d", fg = "Black")
         b5_5.place(x = 890, y = 230, width = 220, height = 40)
 
+        # Manual Attendance
+        img5 = Image.open(r"App-Images\manual-atten.png")
+        img5 = img5.resize((220, 220), Image.ANTIALIAS)
+        self.photoimg5 = ImageTk.PhotoImage(img5)
+        b5 = tk.Button(bg_img, image = self.photoimg5)
+        b5.place(x = 230, y = 300, width = 220, height = 180)
+
+        # Manual Attendance
+        b5_6 = tk.Button(bg_img, text = "Manual Attendance", cursor = "hand2", command = lambda: controller.show_frame(Manual), 
+        font = ("open sans", 15), bg = "#117c9d", fg = "Black")
+        b5_6.place(x = 230, y = 480, width = 220, height = 40)
+
         # Photos button
         img7 = Image.open(r"App-Images\Photos.jpg")
         img7 = img7.resize((220, 220), Image.ANTIALIAS)
         self.photoimg7 = ImageTk.PhotoImage(img7)
         b6 = tk.Button(bg_img, image = self.photoimg7)
-        b6.place(x = 350, y = 300, width = 220, height = 180)
+        b6.place(x = 500, y = 300, width = 220, height = 180)
         # Text: Photos
         b6_6 = tk.Button(bg_img, text = "Photos", cursor = "hand2", command = self.open_img, 
         font = ("open sans", 15), bg = "#117c9d", fg = "Black")
-        b6_6.place(x = 350, y = 480, width = 220, height = 40)
+        b6_6.place(x = 500, y = 480, width = 220, height = 40)
         
+        # Logout
         img9 = Image.open(r"App-Images\Exit.jpg")
         img9 = img9.resize((220, 220), Image.ANTIALIAS)
         self.photoimg9 = ImageTk.PhotoImage(img9)
         b8 = tk.Button(bg_img, image = self.photoimg9)
-        b8.place(x = 620, y = 300, width = 220, height = 180)
+        b8.place(x = 770, y = 300, width = 220, height = 180)
 
         # Text: Log Out
         b8_8 = tk.Button(bg_img, text = "Log Out", command=lambda: controller.show_frame(Login), cursor = "hand2", font = ("open sans", 15), 
         bg = "#117c9d", fg = "Black")
-        b8_8.place(x = 620, y = 480, width = 220, height = 40)
+        b8_8.place(x = 770, y = 480, width = 220, height = 40)
+
+
+
         # ===== Menu Section =====
         
     def open_img(self):
@@ -589,28 +604,6 @@ class Student(tk.Frame):
         # Right label frame
         Right_frame = tk.LabelFrame(main_frame, bd = 2, bg = "white", relief = RAISED, text = "Student Information", font = ("Sans Serif", 12))
         Right_frame.place(x = 630, y = 10, width = 580, height = 450)
-
-        # #=====Search Frame=====
-        # search_frame = tk.LabelFrame(Right_frame, bd = 2, bg = "white", relief = RIDGE, text = "Search", font = ("Sans Serif", 12))
-        # search_frame.place(x = 5, y = 10, width = 565, height = 70)
-        # search_label = tk.Label(search_frame, text = "Search By: ", font = ("Sans Serif", 12), bg = "white")
-        # search_label.grid(row = 0, column = 0, padx = 5,  sticky = W)
-
-        # # Combo Boxes
-        # search_combo = ttk.Combobox(search_frame, font = ("Sans Serif", 12), state = "readonly", width = 10)
-        # search_combo["values"] = ("Select", "Name", "ID", "Email")
-        # search_combo.current(0)
-        # search_combo.grid(row = 0, column = 1, padx = 2, pady = 5, sticky = W)
-
-        # # Entry Fields
-        # search_entry = ttk.Entry(search_frame, width = 15, font = ("Sans Serif", 12))
-        # search_entry.grid(row = 0, column = 2, pady = 5, sticky = W)
-
-        # # Buttons
-        # searchbtn = tk.Button(search_frame, text = "Search", width = 10, font = ("Sans Serif", 12), bg = "#117c9d", fg = "black")
-        # searchbtn.grid(row = 0, column = 3, padx = 2)
-        # showallbtn = tk.Button(search_frame, text = "Show All", width = 10, font = ("Sans Serif", 12), bg = "#117c9d", fg = "black")
-        # showallbtn.grid(row = 0, column = 4, padx = 2)
 
         # ===== Table Frame ====
         table_frame = tk.Frame(Right_frame, bd = 2, bg = "white", relief = RIDGE)
@@ -1243,10 +1236,201 @@ class Face_Recognition(tk.Frame):
         cv2.destroyAllWindows()
 ############################# End of Face Recognition Page #####################################################
 
+class Manual(tk.Frame):
+    def __init__(self, parent, controller):
+        tk.Frame.__init__(self, parent)
+        ####Variables####
+        self.var_level = StringVar()
+        self.var_sID = StringVar()
+        self.var_date = StringVar()
+        self.var_Time = StringVar()
+        self.var_tutorID = StringVar()
+        self.var_roomID = StringVar()
+        self.var_module_code = StringVar()
+
+        # ===== Header and background images =====
+        img = Image.open(r"App-Images\Header.jpg")
+        img = img.resize((1300, 130), Image.ANTIALIAS)
+        self.photoimg = ImageTk.PhotoImage(img)
+        f_lbl = tk.Label(self, image = self.photoimg)
+        f_lbl.place(x= -1, y=0)
+        # Adding a background image to the application software
+        img1 = Image.open(r"App-Images\Background.webp")
+        img1 = img1.resize((1530, 710), Image.ANTIALIAS)
+        self.photoimg1 = ImageTk.PhotoImage(img1)
+        bg_img = tk.Label(self, image = self.photoimg1)
+        bg_img.place(x = 0, y = 130, width = 1530, height = 710)
+        # Adding a text in the application
+        title_lbl = tk.Label(bg_img,text = "Student Details", font = ("open sans", 30), bg = "white", fg = "Black")
+        title_lbl.place(x = -100, y = 0, width = 1530, height = 40)
+        back_button = tk.Button(bg_img, text = "Back", command = lambda: controller.show_frame(Main), font = ("Helvetica", 10), bd = 2, relief = RIDGE, width = 13, bg = "#117c9d", fg = "black")
+        back_button.place(x = 1010, y = 0, width = 120, height = 40)
+        # ===== Header and background images =====
+
+        # ===== Work Frames =====
+        #Adding a frame
+        main_frame = tk.Frame(bg_img, bd = 2, bg = "white")
+        main_frame.place(x = 25, y = 50, width = 1230, height = 480)  
+        # ====== Information section =====
+        # Course Info label
+        # Class Info label
+        class_student_frame = LabelFrame(main_frame, bd = 2, bg = "white", relief = RIDGE, text = "Class Student Information", font = ("Sans Serif", 12))
+        class_student_frame.place(x = 5, y = 0, width = 600, height = 460)
+
+        # Student ID
+        studentID_label = tk.Label(class_student_frame, text = "Student ID:", font = ("Sans Serif", 12), bg = "white")
+        studentID_label.grid(row = 0, column = 0, sticky = W)
+        studentID_entry = ttk.Entry(class_student_frame, textvariable= self.var_sID, width = 15, font = ("Sans Serif", 12))
+        studentID_entry.grid(row = 0, column = 1, pady = 5, sticky = W)
+
+        # TIme
+        Time_label = tk.Label(class_student_frame, text = "Time:", font = ("Sans Serif", 12), bg = "white")
+        Time_label.grid(row = 1, column = 0, sticky = W)
+        Time_entry = ttk.Entry(class_student_frame, textvariable= self.var_Time, width = 15, font = ("Sans Serif", 12))
+        Time_entry.grid(row = 1, column = 1, pady = 5, sticky = W)
+
+        # Level
+        level_label = tk.Label(class_student_frame, text = "Level:", font = ("Sans Serif", 12), bg = "white")
+        level_label.grid(row = 2, column = 0, sticky = W)
+        # Level Combo box
+        level_combo = ttk.Combobox(class_student_frame, textvariable = self.var_level, font = ("Sans Serif", 12), state = "readonly", width = 13)
+        level_combo["values"] = ("Select Level", "1", "2", "3", "4", "5", "6")
+        level_combo.current(0)
+        level_combo.grid(row = 2, column = 1, pady = 3, sticky = W)
+
+        # Tutor ID
+        tutor_ID_label = tk.Label(class_student_frame, text = "Tutor ID:", font = ("Sans Serif", 12), bg = "white")
+        tutor_ID_label.grid(row = 3, column = 0, sticky = W)
+        tutor_ID_entry = ttk.Entry(class_student_frame, textvariable= self.var_tutorID, width = 15, font = ("Sans Serif", 12))
+        tutor_ID_entry.grid(row = 3, column = 1, pady = 5, sticky = W)
+
+        # Room ID
+        room_ID_label = tk.Label(class_student_frame, text = "Room ID:", font = ("Sans Serif", 12), bg = "white")
+        room_ID_label.grid(row = 4, column = 0, sticky = W)
+        room_ID_entry = ttk.Entry(class_student_frame, textvariable= self.var_roomID, width = 15, font = ("Sans Serif", 12))
+        room_ID_entry.grid(row = 4, column = 1, pady = 5, sticky = W)
+
+        # Date 
+        date_label = tk.Label(class_student_frame, text = "Date:", font = ("Sans Serif", 12), bg = "white")
+        date_label.grid(row = 0, column = 2, padx = 5,  sticky = W)
+        cal = DateEntry(class_student_frame, width= 20, textvariable = self.var_date, background='darkblue', state = "readonly", foreground='white', borderwidth=2)
+        cal.grid(row=0, column = 3, padx= 5, sticky = W)
+
+        # Module Code
+        module_code_label = tk.Label(class_student_frame, text = 'Module Code: ', font = ("Sans Serif", 12), bg = "white")
+        module_code_label.grid(row = 1, column = 2, padx = 5,  sticky = W)
+        module_code_entry = ttk.Entry(class_student_frame, textvariable= self.var_module_code, width = 15, font = ("Sans Serif", 12))
+        module_code_entry.grid(row = 1, column = 3, padx = 5, sticky = W)
+
+        # ===== Functional Buttons 1.0 =====
+        # Buttons Frame
+        btn_frame = tk.Frame(class_student_frame, bd = 2, relief = RAISED, bg = "white")
+        btn_frame.place(x = 3, y = 400, width = 592, height = 37)
+
+        # Update
+        updatebtn = tk.Button(btn_frame, text = "Update", command = self.update_student_table, width = 13, font = ("Sans Serif", 12), bg = "#117c9d", fg = "black")
+        updatebtn.place(x = 0, y = 0, width= 198)
+
+        # Delete 
+        export_csv_btn = tk.Button(btn_frame, text = "Export CSV", command = self.export_student_data, width = 13, font = ("Sans Serif", 12), bg = "#117c9d", fg = "black")
+        export_csv_btn.place(x = 200, y = 0, width= 198)
+
+        # Reset
+        resetbtn = tk.Button(btn_frame, text = "Reset", command = self.reset_data, width = 13, font = ("Sans Serif", 12), bg = "#117c9d", fg = "black")
+        resetbtn.place(x = 400, y = 0, width= 198)
+        # ===== Functional Buttons 1.0 =====
+
+        # ===== Functional Buttons 1.1 =====
+    
+        # Right label frame
+        Right_frame = LabelFrame(main_frame, bd = 2, bg = "white", relief = RAISED, text = "Student Information", font = ("Sans Serif", 12))
+        Right_frame.place(x = 630, y = 10, width = 580, height = 450)
+
+        # ===== Table Frame ====
+        table_frame = Frame(Right_frame, bd = 2, bg = "white", relief = RIDGE)
+        table_frame.place(x = 5, y = 10, width = 565, height = 420)
+
+        # ===== Scroll bar =====
+        Scroll_x = ttk.Scrollbar(table_frame, orient = HORIZONTAL)
+        Scroll_y = ttk.Scrollbar(table_frame, orient = VERTICAL)
+        # ===== Scroll bar =====
+
+        # ===== Table Contents =====
+        self.student_table = ttk.Treeview(table_frame, column = ("Student ID", "Date", "Time", "Module Code", "Level", "Tutor ID", "Room ID"), xscrollcommand = Scroll_x.set, yscrollcommand = Scroll_y.set)
+        Scroll_x.pack(side = BOTTOM, fill = X)
+        Scroll_y.pack(side = RIGHT, fill = Y)
+        Scroll_x.config(command = self.student_table.xview)
+        Scroll_y.config(command = self.student_table.yview)     
+        self.student_table.heading("Student ID", text = "Student ID")
+        self.student_table.heading("Date", text = "Date")
+        self.student_table.heading("Time", text = "Time")
+        self.student_table.heading("Module Code", text = "Module Code")
+        self.student_table.heading("Level", text = "Level")
+        self.student_table.heading("Tutor ID", text = "Tutor ID")
+        self.student_table.heading("Room ID", text = "Room ID")
+        self.student_table["show"] = "headings"
+
+        self.student_table.column("Student ID", width = 100)
+        self.student_table.column("Date", width = 100)
+        self.student_table.column("Time", width = 100)
+        self.student_table.column("Module Code", width = 100)
+        self.student_table.column("Level", width = 100)
+        self.student_table.column("Tutor ID", width = 100)
+        self.student_table.column("Room ID", width = 100)
+        self.student_table.pack(fill = BOTH, expand = 1)
+        self.student_table.bind("<ButtonRelease>")
+        # self.fetch_data()
+        # ===== Table Contents =====
+
+    def update_student_table(self):
+        level = self.var_level.get()
+        std_ID = self.var_sID.get()
+        Date = self.var_date.get()
+        Time = self.var_Time.get()
+        t_ID = self.var_tutorID.get()
+        r_ID = self.var_roomID.get()
+        m_code = self.var_module_code.get()
+        # Insert the data into the treeview
+        self.student_table.insert("", "end", values=(std_ID, Date, Time, m_code, level, t_ID, r_ID))
+
+    def reset_data(self):
+        self.var_sID.set("")
+        self.var_date.set("Date")
+        self.var_Time.set("")
+        self.var_level.set("Select Level")
+        self.var_tutorID.set("")
+        self.var_roomID.set("")
+        self.var_module_code.set("")
+
+    def export_student_data(self):
+        file_exists = os.path.isfile("Manual Attendance.csv")
+        # Open a file for writing
+        with open("Manual Attendance.csv", "a", newline="") as file:
+            writer = csv.writer(file)
+            
+            # Write the header row
+            if not file_exists:
+                writer.writerow(["Student ID", "Date", "Time", "Module Code", "Level", "Tutor ID", "Room ID"])
+            
+            # Write each row of data from the treeview
+            for row in self.student_table.get_children():
+                std_ID = self.student_table.item(row, "values")[0]
+                Date = self.student_table.item(row, "values")[1]
+                Time = self.student_table.item(row, "values")[2]
+                m_code = self.student_table.item(row, "values")[3]
+                level = self.student_table.item(row, "values")[4]
+                t_ID = self.student_table.item(row, "values")[5]
+                r_ID = self.student_table.item(row, "values")[6]
+                writer.writerow([std_ID, Date, Time, m_code, level, t_ID, r_ID])
+        try:
+            messagebox.showinfo("Export CSV", "CSV file exported successfully!")
+        except:
+            messagebox.showerror("Export CSV", "Error exporting CSV file.")
+############################# End of Manual Attendance Page #####################################################
+ 
 class Application(tk.Tk):
     def __init__(self, *args, **kwargs):
         tk.Tk.__init__(self, *args, **kwargs)
-
         window = tk.Frame(self)
         window.pack()
 
@@ -1254,7 +1438,7 @@ class Application(tk.Tk):
         window.grid_columnconfigure(0, minsize = 1530)
 
         self.frames = {}
-        for F in (Login, Register, Main, Student, Train, Attendance, Face_Recognition):
+        for F in (Login, Register, Main, Student, Train, Attendance, Face_Recognition, Manual):
             frame = F(window, self)
             self.frames[F] = frame
             frame.grid(row = 0, column = 0, sticky = "nsew")
