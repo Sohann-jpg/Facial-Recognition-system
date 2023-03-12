@@ -14,7 +14,10 @@ from time import strftime
 from datetime import datetime
 from tkcalendar import DateEntry
 
- 
+#       img = img.resize((1550, 130), Image.ANTIALIAS)
+        # img1 = img1.resize((1550, 710), Image.ANTIALIAS)
+        # bg_img.place(x = 0, y = 130, width = 1550, height = 710)
+        # title_lbl.place(x = -100, y = 0, width = 1800, height = 45)
 class Login(tk.Frame):
     def __init__(self, parent, controller):
         tk.Frame.__init__(self, parent)
@@ -26,23 +29,22 @@ class Login(tk.Frame):
         self.var_secA = StringVar()
         self.var_pass = StringVar()
         self.var_conpass = StringVar()
-        
     # Adding a header image to the application software
         img = Image.open(r"App-Images\Header.jpg")
-        img = img.resize((1300, 130), Image.ANTIALIAS)
+        img = img.resize((1550, 130), Image.ANTIALIAS)
         self.photoimg = ImageTk.PhotoImage(img)
         f_lbl = tk.Label(self, image = self.photoimg)
         f_lbl.place(x= -1, y=0)
         # Adding a background image to the application software
         img1 = Image.open(r"App-Images\Background.webp")
-        img1 = img1.resize((1530, 710), Image.ANTIALIAS)
+        img1 = img1.resize((1550, 710), Image.ANTIALIAS)
         self.photoimg1 = ImageTk.PhotoImage(img1)
         bg_img = tk.Label(self, image = self.photoimg1)
-        bg_img.place(x = 0, y = 130, width = 1530, height = 710)
+        bg_img.place(x = 0, y = 130, width = 1550, height = 710)
         # Adding a text in the application
         title_lbl = tk.Label(bg_img,text = "Login or register to continue", font = ("open sans", 30), 
         bg = "white", fg = "Black")
-        title_lbl.place(x = -100, y = 0, width = 1530, height = 45)
+        title_lbl.place(x = -100, y = 0, width = 1800, height = 45)
 
         self.frame = Frame(bg_img, bg = '#0a384c')
         self.frame.place(x = 480, y = 70, width = 340, height = 450)
@@ -184,20 +186,20 @@ class Register(tk.Frame):
 
         # Adding a header image to the application software
         img = Image.open(r"App-Images\Header.jpg")
-        img = img.resize((1300, 130), Image.ANTIALIAS)
+        img = img.resize((1550, 130), Image.ANTIALIAS)
         self.photoimg = ImageTk.PhotoImage(img)
         f_lbl = tk.Label(self, image = self.photoimg)
         f_lbl.place(x= -1, y=0)
         # Adding a background image to the application software
         img1 = Image.open(r"App-Images\Background.webp")
-        img1 = img1.resize((1530, 710), Image.ANTIALIAS)
+        img1 = img1.resize((1550, 710), Image.ANTIALIAS)
         self.photoimg1 = ImageTk.PhotoImage(img1)
         bg_img = tk.Label(self, image = self.photoimg1)
-        bg_img.place(x = 0, y = 130, width = 1530, height = 710)
+        bg_img.place(x = 0, y = 130, width = 1550, height = 710)
         # Adding a text in the application
         title_lbl = tk.Label(bg_img,text = "New User? Register", font = ("open sans", 30), 
         bg = "white", fg = "Black")
-        title_lbl.place(x = -100, y = 0, width = 1530, height = 45)
+        title_lbl.place(x = -100, y = 0, width = 1800, height = 45)
 
        # ===== Work Frames =====
         #Adding a frame
@@ -298,7 +300,6 @@ class Register(tk.Frame):
                                                                                     ))
             conn.commit()
             conn.close()
-
             messagebox.showinfo("Success", "Registered Succesfully")
     def exit(self):
         self.exit = tkinter.messagebox.askyesno("Back to Login", "Are you sure you want to go back to login?", parent = self.root)
@@ -315,20 +316,20 @@ class Main(tk.Frame):
         # ===== Header and background images =====
         # Adding a header image to the application software
         img = Image.open(r"App-Images\Header.jpg")
-        img = img.resize((1300, 130), Image.ANTIALIAS)
+        img = img.resize((1550, 130), Image.ANTIALIAS)
         self.photoimg = ImageTk.PhotoImage(img)
         f_lbl = tk.Label(self, image = self.photoimg)
         f_lbl.place(x= -1, y=0)
         # Adding a background image to the application software
         img1 = Image.open(r"App-Images\Background.webp")
-        img1 = img1.resize((1530, 710), Image.ANTIALIAS)
+        img1 = img1.resize((1550, 710), Image.ANTIALIAS)
         self.photoimg1 = ImageTk.PhotoImage(img1)
         bg_img = tk.Label(self, image = self.photoimg1)
-        bg_img.place(x = 0, y = 130, width = 1530, height = 710)
+        bg_img.place(x = 0, y = 130, width = 1550, height = 710)
         # Adding a text in the application
         title_lbl = tk.Label(bg_img,text = "Hello there! Welcome", font = ("open sans", 30), 
         bg = "white", fg = "Black")
-        title_lbl.place(x = -100, y = 0, width = 1530, height = 40)
+        title_lbl.place(x = -100, y = 0, width = 1800, height = 40)
         # ===== Header and background images =====
 
         # ===== Menu Section =====
@@ -411,11 +412,7 @@ class Main(tk.Frame):
         b8_8 = tk.Button(bg_img, text = "Log Out", command=lambda: controller.show_frame(Login), cursor = "hand2", font = ("open sans", 15), 
         bg = "#117c9d", fg = "Black")
         b8_8.place(x = 770, y = 480, width = 220, height = 40)
-
-
-
         # ===== Menu Section =====
-        
     def open_img(self):
         os.startfile("Data")
 ############################# End of Main Page #####################################################
@@ -440,19 +437,19 @@ class Student(tk.Frame):
 
         # ===== Header and background images =====
         img = Image.open(r"App-Images\Header.jpg")
-        img = img.resize((1300, 130), Image.ANTIALIAS)
+        img = img.resize((1550, 130), Image.ANTIALIAS)
         self.photoimg = ImageTk.PhotoImage(img)
         f_lbl = tk.Label(self, image = self.photoimg)
         f_lbl.place(x= -1, y=0)
         # Adding a background image to the application software
         img1 = Image.open(r"App-Images\Background.webp")
-        img1 = img1.resize((1530, 710), Image.ANTIALIAS)
+        img1 = img1.resize((1550, 710), Image.ANTIALIAS)
         self.photoimg1 = ImageTk.PhotoImage(img1)
         bg_img = tk.Label(self, image = self.photoimg1)
-        bg_img.place(x = 0, y = 130, width = 1530, height = 710)
+        bg_img.place(x = 0, y = 130, width = 1550, height = 710)
         # Adding a text in the application
         title_lbl = tk.Label(bg_img,text = "Student Details", font = ("open sans", 30), bg = "white", fg = "Black")
-        title_lbl.place(x = -100, y = 0, width = 1530, height = 40)
+        title_lbl.place(x = -100, y = 0, width = 1800, height = 40)
 
         back_button = tk.Button(bg_img, text = "Back", command = lambda: controller.show_frame(Main), font = ("Helvetica", 10), bd = 2, relief = RIDGE, width = 13, bg = "#117c9d", fg = "black")
         back_button.place(x = 1010, y = 0, width = 120, height = 40)
@@ -878,21 +875,21 @@ class Train(tk.Frame):
         tk.Frame.__init__(self, parent)
         # Add the widgets for the Train page here
         img = Image.open(r"App-Images\Header.jpg")
-        img = img.resize((1300, 130), Image.ANTIALIAS)
+        img = img.resize((1550, 130), Image.ANTIALIAS)
         self.photoimg = ImageTk.PhotoImage(img)
         f_lbl = Label(self, image = self.photoimg)
         f_lbl.place(x= -1, y=0)
 
         # Adding a background image to the application software
         img1 = Image.open(r"App-Images\Background.webp")
-        img1 = img1.resize((1530, 710), Image.ANTIALIAS)
+        img1 = img1.resize((1550, 710), Image.ANTIALIAS)
         self.photoimg1 = ImageTk.PhotoImage(img1)
         bg_img = Label(self, image = self.photoimg1)
-        bg_img.place(x = 0, y = 130, width = 1530, height = 710)
+        bg_img.place(x = 0, y = 130, width = 1550, height = 710)
 
         # Adding a text in the application
         title_lbl = Label(bg_img,text = "Train Data", font = ("open sans", 30), bg = "white", fg = "Black")
-        title_lbl.place(x = -100, y = 0, width = 1530, height = 40)
+        title_lbl.place(x = -100, y = 0, width = 1800, height = 40)
 
         back_button = tk.Button(bg_img, text = "Back", command = lambda: controller.show_frame(Main), font = ("Helvetica", 10), bd = 2, relief = RIDGE, width = 13, bg = "#117c9d", fg = "black")
         back_button.place(x = 1010, y = 0, width = 120, height = 40)
@@ -942,20 +939,20 @@ class Attendance(tk.Frame):
 
     # ===== Header and background images =====
         img = Image.open(r"App-Images\Header.jpg")
-        img = img.resize((1300, 130), Image.ANTIALIAS)
+        img = img.resize((1550, 130), Image.ANTIALIAS)
         self.photoimg = ImageTk.PhotoImage(img)
         f_lbl = Label(self, image = self.photoimg)
         f_lbl.place(x= -1, y=0)
         # Adding a background image to the application software
         img1 = Image.open(r"App-Images\Background.webp")
-        img1 = img1.resize((1530, 710), Image.ANTIALIAS)
+        img1 = img1.resize((1550, 710), Image.ANTIALIAS)
         self.photoimg1 = ImageTk.PhotoImage(img1)
         bg_img = Label(self, image = self.photoimg1)
-        bg_img.place(x = 0, y = 130, width = 1530, height = 710)
+        bg_img.place(x = 0, y = 130, width = 1550, height = 710)
         
         # Adding a text in the application
         title_lbl = Label(bg_img,text = "Attendance Management System", font = ("open sans", 30), bg = "white", fg = "Black")
-        title_lbl.place(x = -100, y = 0, width = 1530, height = 40)
+        title_lbl.place(x = -100, y = 0, width = 1800, height = 40)
         back_button = tk.Button(bg_img, text = "Back", command = lambda: controller.show_frame(Main), font = ("Helvetica", 10), bd = 2, relief = RIDGE, width = 13, bg = "#117c9d", fg = "black")
         back_button.place(x = 1010, y = 0, width = 120, height = 40)
     # ===== Header and background images =====
@@ -1124,21 +1121,21 @@ class Face_Recognition(tk.Frame):
         tk.Frame.__init__(self, parent)
         # Add the widgets for the Face Recognition page here
         img = Image.open(r"App-Images\Header.jpg")
-        img = img.resize((1300, 130), Image.ANTIALIAS)
+        img = img.resize((1550, 130), Image.ANTIALIAS)
         self.photoimg = ImageTk.PhotoImage(img)
         f_lbl = Label(self, image = self.photoimg)
         f_lbl.place(x= -1, y=0)
 
         # Adding a background image to the application software
         img1 = Image.open(r"App-Images\Background.webp")
-        img1 = img1.resize((1530, 710), Image.ANTIALIAS)
+        img1 = img1.resize((1550, 710), Image.ANTIALIAS)
         self.photoimg1 = ImageTk.PhotoImage(img1)
         bg_img = Label(self, image = self.photoimg1)
-        bg_img.place(x = 0, y = 130, width = 1530, height = 710)
+        bg_img.place(x = 0, y = 130, width = 1550, height = 710)
         
         # Adding a text in the application
         title_lbl = Label(bg_img,text = "Face Recognition", font = ("open sans", 30), bg = "white", fg = "Black")
-        title_lbl.place(x = -100, y = 0, width = 1530, height = 40)
+        title_lbl.place(x = -100, y = 0, width = 1800, height = 40)
         back_button = tk.Button(bg_img, text = "Back", command = lambda: controller.show_frame(Main), font = ("Helvetica", 10), bd = 2, relief = RIDGE, width = 13, bg = "#117c9d", fg = "black")
         back_button.place(x = 1010, y = 0, width = 120, height = 40)
 
@@ -1188,11 +1185,11 @@ class Face_Recognition(tk.Frame):
                 my_cursor.execute("select student_name from student where student_id = " + str(id))
                 n = my_cursor.fetchone()
                 n = "," . join(n)
-                
+                                
                 my_cursor.execute("select student_id from student where student_id = " + str(id))
                 i = my_cursor.fetchone()
-                i = "," . join(i)
-
+                i = str(i[0])  # convert integer to string
+                                
                 my_cursor.execute("select course from student where student_id = " + str(id))
                 c = my_cursor.fetchone()
                 c = "," . join(c)
@@ -1202,12 +1199,6 @@ class Face_Recognition(tk.Frame):
                     cv2.putText(img, f"Name:{n}", (x, y - 30), cv2.FONT_ITALIC, 0.8, (255,255,255), 2)
                     cv2.putText(img, f"Course:{c}", (x, y - 5), cv2.FONT_ITALIC, 0.8, (255,255,255), 2)
                     self.mark_attendance(n, i, c)
-                    #Anti-spoofing code
-                    if(self.is_live(gray_image[y:y + h, x: x + w])):
-                        cv2.putText(img, "Live", (x, y - 80), cv2.FONT_ITALIC, 0.8, (255,255,255), 2)
-                        self.mark_attendance(n, i, c)
-                    else:
-                         cv2.putText(img, "Fake", (x, y - 80), cv2.FONT_ITALIC, 0.8, (255,255,255), 2)
                 else:
                     cv2.rectangle(img, (x, y), (x + w, y +h), (0,0,255), 3)
                     cv2.putText(img, "Unknown Face", (x, y - 55), cv2.FONT_ITALIC, 0.8, (255,255,255), 2)
@@ -1250,19 +1241,19 @@ class Manual(tk.Frame):
 
         # ===== Header and background images =====
         img = Image.open(r"App-Images\Header.jpg")
-        img = img.resize((1300, 130), Image.ANTIALIAS)
+        img = img.resize((1550, 130), Image.ANTIALIAS)
         self.photoimg = ImageTk.PhotoImage(img)
         f_lbl = tk.Label(self, image = self.photoimg)
         f_lbl.place(x= -1, y=0)
         # Adding a background image to the application software
         img1 = Image.open(r"App-Images\Background.webp")
-        img1 = img1.resize((1530, 710), Image.ANTIALIAS)
+        img1 = img1.resize((1550, 710), Image.ANTIALIAS)
         self.photoimg1 = ImageTk.PhotoImage(img1)
         bg_img = tk.Label(self, image = self.photoimg1)
-        bg_img.place(x = 0, y = 130, width = 1530, height = 710)
+        bg_img.place(x = 0, y = 130, width = 1550, height = 710)
         # Adding a text in the application
-        title_lbl = tk.Label(bg_img,text = "Student Details", font = ("open sans", 30), bg = "white", fg = "Black")
-        title_lbl.place(x = -100, y = 0, width = 1530, height = 40)
+        title_lbl = tk.Label(bg_img,text = "Manual Attendance", font = ("open sans", 30), bg = "white", fg = "Black")
+        title_lbl.place(x = -100, y = 0, width = 1800, height = 40)
         back_button = tk.Button(bg_img, text = "Back", command = lambda: controller.show_frame(Main), font = ("Helvetica", 10), bd = 2, relief = RIDGE, width = 13, bg = "#117c9d", fg = "black")
         back_button.place(x = 1010, y = 0, width = 120, height = 40)
         # ===== Header and background images =====
@@ -1427,15 +1418,15 @@ class Manual(tk.Frame):
         except:
             messagebox.showerror("Export CSV", "Error exporting CSV file.")
 ############################# End of Manual Attendance Page #####################################################
- 
+
 class Application(tk.Tk):
     def __init__(self, *args, **kwargs):
         tk.Tk.__init__(self, *args, **kwargs)
         window = tk.Frame(self)
         window.pack()
 
-        window.grid_rowconfigure(0, minsize = 790)
-        window.grid_columnconfigure(0, minsize = 1530)
+        window.grid_rowconfigure(0, minsize = 1080)
+        window.grid_columnconfigure(0, minsize = 1920)
 
         self.frames = {}
         for F in (Login, Register, Main, Student, Train, Attendance, Face_Recognition, Manual):
@@ -1447,6 +1438,5 @@ class Application(tk.Tk):
     def show_frame(self, page):
         frame = self.frames[page]
         frame.tkraise()
-
 app = Application()
 app.mainloop()
