@@ -406,7 +406,15 @@ class Student:
 # Finally, it uses the cursor to execute an update query to update the "details" table with the student information from the various variables
 # (course, year, semester, level, student name, gender, email, parents name, address, parents number, and photo sample) 
 # using the student ID as the primary key. ===
+# === This section of the code uses OpenCV to capture video from the device's camera and detect faces in the frames 
+# using the pre-trained Haar cascade classifier "haarcascade_frontalface_default.xml". 
+# The detected faces are then cropped from the frames and resized to 450x450 pixels. 
+# The cropped and resized images are then saved to the "data" folder with filenames in the format "user.id.img_id.jpg".
+#  The code continues to capture and save images until the user presses the enter key or 100 images have been captured. 
+#  A message box is displayed at the end of the process to confirm that the dataset has been generated successfully. 
+#  If an exception occurs, an error message box is displayed with the specific error message. ===
 
+##### Loading haarcascade library from openCV and 
 # ===== Generating dataset and taking photo Sample =====
     def generate_dataset(self):
         if self.var_course.get() == "Select Course" or self.var_sName.get() == "" or self.var_sID.get() == "":
@@ -432,51 +440,41 @@ class Student:
                                                                                                                                                                                                                                 self.var_address.get(),
                                                                                                                                                                                                                                 self.var_pNum.get(),
                                                                                                                                                                                                                                 self.var_radio1.get(),                                                                                                                                                                                                                           
-                                                                                                                                                                                                                                self.var_sID.get() == +1
+                                                                                                                                                                                                                                self.var_sID.get() == id+1
                                                                                                                                                                                                                             ))
                 conn.commit()
                 self.fetch_data()
                 self.reset_data()
                 conn.close()
-
-# === This section of the code uses OpenCV to capture video from the device's camera and detect faces in the frames 
-# using the pre-trained Haar cascade classifier "haarcascade_frontalface_default.xml". 
-# The detected faces are then cropped from the frames and resized to 450x450 pixels. 
-# The cropped and resized images are then saved to the "data" folder with filenames in the format "user.id.img_id.jpg".
-#  The code continues to capture and save images until the user presses the enter key or 100 images have been captured. 
-#  A message box is displayed at the end of the process to confirm that the dataset has been generated successfully. 
-#  If an exception occurs, an error message box is displayed with the specific error message. ===
-
-##### Loading haarcascade library from openCV and 
                 face_classifier = cv2.CascadeClassifier("haarcascade_frontalface_default.xml")
                 def face_cropped(img):
                     gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
                     faces = face_classifier.detectMultiScale(gray, 1.3, 5)
                     #### Scaling factor = 1.3
-                    ### Minimun neighnor = 5
+                    ### Minimun neighbor = 5
                     for (x, y, w, h) in faces:
                         face_cropped = img[y:y+h, x:x+w]
                         return face_cropped
+                    
                 cap = cv2.VideoCapture(0)
-                img_id = 0 
+                img_id = 0
                 while True:
                     ret, my_frame = cap.read()
                     if face_cropped(my_frame) is not None:
-                        img_id += 1
-                        face = cv2.resize(face_cropped(my_frame), (450, 450))
+                        img_id+= 1
+                        face = cv2.resize(face_cropped(my_frame), (450,450))
                         face = cv2.cvtColor(face, cv2.COLOR_BGR2GRAY)
-                        file_name_path = "Data/user." + str(id) + "." + str(img_id) + ".jpg"
+                        file_name_path = "Data/user." + str(id) + "." +str(img_id) + ".jpg"
                         cv2.imwrite(file_name_path, face)
-                        cv2.putText(face, str(img_id), (50,50), cv2.FONT_HERSHEY_COMPLEX, 2, (0,255,230), 2)
+                        cv2.putText(face, str(img_id), (50, 50), cv2.FONT_HERSHEY_SIMPLEX, 2, (0, 255, 0), 2)
                         cv2.imshow("Cropped Face", face)
                     if cv2.waitKey(1) == 13 or int(img_id) == 100:
                         break
                 cap.release()
                 cv2.destroyAllWindows()
-                messagebox.showinfo("Result", "Generating dataset completed successfully")
-            except Exception as es:
-                messagebox.showerror("Error", f"Due to: {str(es)}", parent = self.root)
-                
+                messagebox.showinfo("Success", "Generatimg Dataset Successful")
+            except EXCEPTION as es:
+                messagebox.showerror("Error", f"Due to:{str(es)}", parent = self.root)
 
 if __name__ == "__main__":
     root = Tk()
