@@ -464,7 +464,7 @@ class Student:
                         img_id+= 1
                         face = cv2.resize(face_cropped(my_frame), (450,450))
                         face = cv2.cvtColor(face, cv2.COLOR_BGR2GRAY)
-                        file_name_path = "Data/user." + str(id) + "." +str(img_id) + ".jpg"
+                        file_name_path = f"Data/user.{self.var_sID.get()}.{img_id}.jpg"
                         cv2.imwrite(file_name_path, face)
                         cv2.putText(face, str(img_id), (50, 50), cv2.FONT_HERSHEY_SIMPLEX, 2, (0, 255, 0), 2)
                         cv2.imshow("Cropped Face", face)
