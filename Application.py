@@ -1,10 +1,10 @@
 import tkinter as tk
 from tkinter import ttk
-from tkinter import * 
+from tkinter import *
 import tkinter
 from PIL import Image,ImageTk
 import mysql.connector
-import cv2 
+import cv2
 from tkinter import messagebox
 import numpy as np
 import os
@@ -13,11 +13,11 @@ from tkinter import filedialog
 from time import strftime
 from datetime import datetime
 from tkcalendar import DateEntry
+import time
+import random
+import face_recognition
 
-#       img = img.resize((1550, 130), Image.ANTIALIAS)
-        # img1 = img1.resize((1550, 710), Image.ANTIALIAS)
-        # bg_img.place(x = 0, y = 130, width = 1550, height = 710)
-        # title_lbl.place(x = -100, y = 0, width = 1800, height = 45)
+
 class Login(tk.Frame):
     def __init__(self, parent, controller):
         tk.Frame.__init__(self, parent)
@@ -51,7 +51,7 @@ class Login(tk.Frame):
         user_img = Image.open("App-Images/user.png")
         user_img = user_img.resize((100, 100), Image.ANTIALIAS)
         self.photoimage1 = ImageTk.PhotoImage(user_img)
-        lblimg1 = tk.Label(image = self.photoimage1, bg = "#117c9d", borderwidth = 1)
+        lblimg1 = tk.Label(self, image = self.photoimage1, bg = "#117c9d", borderwidth = 1)
         lblimg1.place(x = 610, y = 220, width = 100, height = 100)
 
         get_str = tk.Label(self.frame, text = "Login", font = ("Helvetica", 20), fg = "white", bg = "#0a384c")
@@ -590,7 +590,7 @@ class Student(tk.Frame):
         btn_frame1.place(x = 3, y =235, width = 555, height = 37)
 
         # Take Photo
-        takephbtn = tk.Button(btn_frame1, command = self.generate_dataset, text = "Take photo sample", width = 29, font = ("Sans Serif", 12), bg = "#117c9d", fg = "black")
+        takephbtn = tk.Button(btn_frame1, command = self.take_photo_samples, text = "Take photo sample", width = 29, font = ("Sans Serif", 12), bg = "#117c9d", fg = "black")
         takephbtn.grid(row = 0, column = 2)
         # Update Photo
         updatephbtn = tk.Button(btn_frame1, text = "Update photo sample", width = 29, font = ("Sans Serif", 12), bg = "#117c9d", fg = "black")
@@ -755,7 +755,7 @@ class Student(tk.Frame):
                 if delete > 0:
                     conn = mysql.connector.connect(host = "localhost", username = "root", password = "PunnSxG@2806", database = "face_recognition")
                     my_cursor = conn.cursor()
-                    sql = "delete from details where student_id = %s"
+                    sql = "delete from student where student_id = %s"
                     val = (self.var_sID.get(),)
                     my_cursor.execute(sql, val)
                 else:
@@ -796,74 +796,95 @@ class Student(tk.Frame):
 # using the student ID as the primary key. ===
 
 # ===== Generating dataset and taking photo Sample =====
-    def generate_dataset(self):
-        if self.var_course.get() == "Select Course" or self.var_sName.get() == "" or self.var_sID.get() == "":
-            messagebox.showerror("Error", "All fields required", parent = self)
+    # def generate_dataset(self):
+    #     if self.var_course.get() == "Select Course" or self.var_sName.get() == "" or self.var_sID.get() == "":
+    #         messagebox.showerror("Error", "All fields required", parent = self.root)
+    #     else:
+    #         try:
+    #             conn = mysql.connector.connect(host = "localhost", username = "root", password = "PunnSxG@2806", database = "face_recognition")
+    #             my_cursor = conn.cursor()
+    #             my_cursor.execute("select * from student")
+    #             myresult = my_cursor.fetchall()
+    #             id = 0
+    #             for x in myresult:
+    #                 id += 1
+    #             my_cursor.execute("Update student set course = %s, year = %s, semester = %s, level = %s, student_name = %s, gender = %s, email = %s, parents_name = %s, address = %s, parents_number = %s, photo_sample = %s where student_id = %s",(
+    #                                                                                                                                                                                                                             self.var_course.get(),
+    #                                                                                                                                                                                                                             self.var_year.get(),
+    #                                                                                                                                                                                                                             self.var_semester.get(),
+    #                                                                                                                                                                                                                             self.var_level.get(),                                                                                                                                                                                                                     
+    #                                                                                                                                                                                                                             self.var_sName.get(),
+    #                                                                                                                                                                                                                             self.var_gender.get(),
+    #                                                                                                                                                                                                                             self.var_email.get(),
+    #                                                                                                                                                                                                                             self.var_pName.get(),
+    #                                                                                                                                                                                                                             self.var_address.get(),
+    #                                                                                                                                                                                                                             self.var_pNum.get(),
+    #                                                                                                                                                                                                                             self.var_radio1.get(),                                                                                                                                                                                                                           
+    #                                                                                                                                                                                                                             self.var_sID.get() == id+1
+    #                                                                                                                                                                                                                         ))
+    #             conn.commit()
+    #             self.fetch_data()
+    #             self.reset_data()
+    #             conn.close()
+    #             face_classifier = cv2.CascadeClassifier("haarcascade_frontalface_default.xml")
+    #             def face_cropped(img):
+    #                 gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+    #                 faces = face_classifier.detectMultiScale(gray, 1.3, 5)
+    #                 #### Scaling factor = 1.3
+    #                 ### Minimun neighbor = 5
+    #                 for (x, y, w, h) in faces:
+    #                     face_cropped = img[y:y+h, x:x+w]
+    #                     return face_cropped
+                    
+    #             cap = cv2.VideoCapture(0)
+    #             img_id = 0
+    #             # while True:
+    #             #     ret, my_frame = cap.read()
+    #             #     if face_cropped(my_frame) is not None:
+    #             #         img_id+= 1
+    #             #         face = cv2.resize(face_cropped(my_frame), (450,450))
+    #             #         face = cv2.cvtColor(face, cv2.COLOR_BGR2GRAY)
+    #             #         # file_name_path = f"Data/user.{self.var_sID.get()}.{img_id}.jpg"
+    #             #         file_name_path = "Data/user." + str(id) + "." + str(int(time.time())) + "_" + str(random.randint(1, 1000)) + ".jpg"
+    #             #         cv2.imwrite(file_name_path, face)
+    #             #         cv2.putText(face, str(img_id), (50, 50), cv2.FONT_HERSHEY_SIMPLEX, 2, (0, 255, 0), 2)
+    #             #         cv2.imshow("Cropped Face", face)
+    #             #     if cv2.waitKey(1) == 13 or int(img_id) == 100:
+    #             #         break
+    #             while True:
+    #                 ret, my_frame = cap.read()
+    #                 if face_cropped(my_frame) is not None:
+    #                     img_id+= 1
+    #                     face = cv2.resize(face_cropped(my_frame), (450,450))
+    #                     face = cv2.cvtColor(face, cv2.COLOR_BGR2GRAY)
+    #                     name = self.var_sName.get().replace(" ", "_")  # Get the student's name and replace spaces with underscores
+    #                     file_name_path = f"Data/{name}.{img_id}.jpg"  # Updated line
+    #                     cv2.imwrite(file_name_path, face)
+    #                     cv2.putText(face, str(img_id), (50, 50), cv2.FONT_HERSHEY_SIMPLEX, 2, (0, 255, 0), 2)
+    #                     cv2.imshow("Cropped Face", face)
+    #                 if cv2.waitKey(1) == 13 or int(img_id) == 100:
+    #                     break
+    #             cap.release()
+    #             cv2.destroyAllWindows()
+    #             messagebox.showinfo("Success", "Generatimg Dataset Successful")
+    #         except EXCEPTION as es:
+    #             messagebox.showerror("Error", f"Due to:{str(es)}", parent = self.root)
+    def take_photo_samples(self):
+        name = self.var_sName.get()
+        id = self.var_sID.get()
+        course = self.var_course.get()
+        if name and id and course:
+            path = 'Data'
+            if not os.path.exists(path):
+                os.makedirs(path)
+            cap = cv2.VideoCapture(0)
+            success, img = cap.read()
+            if success:
+                cv2.imwrite(f'{path}/{name}.jpg', img)
+            cap.release()
+            cv2.destroyAllWindows()
         else:
-            try:
-                conn = mysql.connector.connect(host = "localhost", username = "root", password = "PunnSxG@2806", database = "face_recognition")
-                my_cursor = conn.cursor()
-                my_cursor.execute("select * from student")
-                myresult = my_cursor.fetchall()
-                id = 0
-                for x in myresult:
-                    id += 1
-                my_cursor.execute("Update student set course = %s, year = %s, semester = %s, level = %s, student_name = %s, gender = %s, email = %s, parents_name = %s, address = %s, parents_number = %s, photo_sample = %s where student_id = %s",(
-                                                                                                                                                                                                                                self.var_course.get(),
-                                                                                                                                                                                                                                self.var_year.get(),
-                                                                                                                                                                                                                                self.var_semester.get(),
-                                                                                                                                                                                                                                self.var_level.get(),                                                                                                                                                                                                                     
-                                                                                                                                                                                                                                self.var_sName.get(),
-                                                                                                                                                                                                                                self.var_gender.get(),
-                                                                                                                                                                                                                                self.var_email.get(),
-                                                                                                                                                                                                                                self.var_pName.get(),
-                                                                                                                                                                                                                                self.var_address.get(),
-                                                                                                                                                                                                                                self.var_pNum.get(),
-                                                                                                                                                                                                                                self.var_radio1.get(),                                                                                                                                                                                                                           
-                                                                                                                                                                                                                                self.var_sID.get() == +1
-                                                                                                                                                                                                                            ))
-                conn.commit()
-                self.fetch_data()
-                self.reset_data()
-                conn.close()
-
-# === This section of the code uses OpenCV to capture video from the device's camera and detect faces in the frames 
-# using the pre-trained Haar cascade classifier "haarcascade_frontalface_default.xml". 
-# The detected faces are then cropped from the frames and resized to 450x450 pixels. 
-# The cropped and resized images are then saved to the "data" folder with filenames in the format "user.id.img_id.jpg".
-#  The code continues to capture and save images until the user presses the enter key or 100 images have been captured. 
-#  A message box is displayed at the end of the process to confirm that the dataset has been generated successfully. 
-#  If an exception occurs, an error message box is displayed with the specific error message. ===
-
-##### Loading haarcascade library from openCV and 
-                face_classifier = cv2.CascadeClassifier("haarcascade_frontalface_default.xml")
-                def face_cropped(img):
-                    gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
-                    faces = face_classifier.detectMultiScale(gray, 1.3, 5)
-                    #### Scaling factor = 1.3
-                    ### Minimun neighnor = 5
-                    for (x, y, w, h) in faces:
-                        face_cropped = img[y:y+h, x:x+w]
-                        return face_cropped
-                cap = cv2.VideoCapture(0)
-                img_id = 0 
-                while True:
-                    ret, my_frame = cap.read()
-                    if face_cropped(my_frame) is not None:
-                        img_id += 1
-                        face = cv2.resize(face_cropped(my_frame), (450, 450))
-                        face = cv2.cvtColor(face, cv2.COLOR_BGR2GRAY)
-                        file_name_path = "Data/user." + str(id) + "." + str(img_id) + ".jpg"
-                        cv2.imwrite(file_name_path, face)
-                        cv2.putText(face, str(img_id), (50,50), cv2.FONT_HERSHEY_COMPLEX, 2, (0,255,230), 2)
-                        cv2.imshow("Cropped Face", face)
-                    if cv2.waitKey(1) == 13 or int(img_id) == 100:
-                        break
-                cap.release()
-                cv2.destroyAllWindows()
-                messagebox.showinfo("Result", "Generating dataset completed successfully")
-            except Exception as es:
-                messagebox.showerror("Error", f"Due to: {str(es)}", parent = self)
+            tk.messagebox.showerror("Error", "Please fill in all fields")
 
     def close(self):
         self.destroy()
@@ -911,7 +932,10 @@ class Train(tk.Frame):
         for image in path:
             img = Image.open(image).convert('L')        # Grayscale image
             imageNP = np.array(img, 'uint8')
-            id = int(os.path.split(image)[1].split('.')[1])
+            # id = int(os.path.split(image)[1].split('.')[1])
+            id = str(os.path.split(image)[1].split('.'[0]))
+            # id = int(id_parts[0]) if len(id_parts) > 0 else 0
+            # id = int(os.path.split(image)[1].split('.')[1].split('_')[0])
             faces.append(imageNP)
             IDs.append(id)
             cv2.imshow("Training", imageNP)
@@ -930,11 +954,11 @@ class Attendance(tk.Frame):
     def __init__(self, parent, controller):
         tk.Frame.__init__(self, parent)
         # Add the widgets for the Attendance page here
-        self.var_atten_id = StringVar()
+        # self.var_atten_id = StringVar()
         self.var_atten_name = StringVar()
         self.var_atten_date = StringVar() 
         self.var_atten_time = StringVar()
-        self.var_atten_course = StringVar()
+        # self.var_atten_course = StringVar()
         self.var_atten_status = StringVar()
 
     # ===== Header and background images =====
@@ -971,10 +995,10 @@ class Attendance(tk.Frame):
         
         # ===== Lables and Entry Fields
         # Attendance
-        AttendanceID_label = Label(inside_left_frame, text = "Attendance ID:", font = ("Sans Serif", 12), bg = "white")
-        AttendanceID_label.grid(row = 0, column = 0, sticky = W)
-        AttendanceID_entry = ttk.Entry(inside_left_frame, width = 15, textvariable = self.var_atten_id, font = ("Sans Serif", 12))
-        AttendanceID_entry.grid(row = 0, column = 1, pady = 5, sticky = W)
+        # AttendanceID_label = Label(inside_left_frame, text = "Attendance ID:", font = ("Sans Serif", 12), bg = "white")
+        # AttendanceID_label.grid(row = 0, column = 0, sticky = W)
+        # AttendanceID_entry = ttk.Entry(inside_left_frame, width = 15, textvariable = self.var_atten_id, font = ("Sans Serif", 12))
+        # AttendanceID_entry.grid(row = 0, column = 1, pady = 5, sticky = W)
 
         # Name
         Name_label = Label(inside_left_frame, text = "Name:", font = ("Sans Serif", 12), bg = "white")
@@ -995,10 +1019,10 @@ class Attendance(tk.Frame):
         Time_entry.grid(row = 1, column = 3, pady = 5, sticky = W)
 
         # Course 
-        Course_label = Label(inside_left_frame, text = "Course:", font = ("Sans Serif", 12), bg = "white")
-        Course_label.grid(row = 2, column = 2, sticky = W)
-        Course_entry = ttk.Entry(inside_left_frame, width = 15, textvariable = self.var_atten_course, font = ("Sans Serif", 12))
-        Course_entry.grid(row = 2, column = 3, pady = 5, sticky = W)
+        # Course_label = Label(inside_left_frame, text = "Course:", font = ("Sans Serif", 12), bg = "white")
+        # Course_label.grid(row = 2, column = 2, sticky = W)
+        # Course_entry = ttk.Entry(inside_left_frame, width = 15, textvariable = self.var_atten_course, font = ("Sans Serif", 12))
+        # Course_entry.grid(row = 2, column = 3, pady = 5, sticky = W)
 
         # Attendance Combo
         Attendance_label = Label(inside_left_frame, text = "Attendance Status:", font = ("Sans Serif", 12), bg = "white")
@@ -1037,7 +1061,7 @@ class Attendance(tk.Frame):
         Scroll_x = ttk.Scrollbar(table_frame, orient = HORIZONTAL)
         Scroll_y = ttk.Scrollbar(table_frame, orient = VERTICAL)
 
-        self.AttendanceReportTable = ttk.Treeview(table_frame, column = ("ID", "Name", "Date", "Time", "Course", "Attendance Status"), xscrollcommand = Scroll_x.set, yscrollcommand = Scroll_y.set)
+        self.AttendanceReportTable = ttk.Treeview(table_frame, column = ("Name", "Time", "Date", "Attendance Status"), xscrollcommand = Scroll_x.set, yscrollcommand = Scroll_y.set)
 
         Scroll_x.pack(side = BOTTOM, fill = X)
         Scroll_y.pack(side = RIGHT, fill = Y)
@@ -1045,20 +1069,16 @@ class Attendance(tk.Frame):
         Scroll_x.config(command = self.AttendanceReportTable.xview)
         Scroll_y.config(command = self.AttendanceReportTable.yview)
 
-        self.AttendanceReportTable.heading("ID", text = "Attendance ID")
         self.AttendanceReportTable.heading("Name", text = "Name")
-        self.AttendanceReportTable.heading("Date", text= "Date")
         self.AttendanceReportTable.heading("Time", text = "Time")
-        self.AttendanceReportTable.heading("Course", text = "Course")
+        self.AttendanceReportTable.heading("Date", text= "Date")
         self.AttendanceReportTable.heading("Attendance Status", text = "Attendance Status")
 
         self.AttendanceReportTable["show"] = "headings"
         
-        self.AttendanceReportTable.column("ID", width = 100)
         self.AttendanceReportTable.column("Name", width = 100)
         self.AttendanceReportTable.column("Time", width = 100)
         self.AttendanceReportTable.column("Date", width = 100)
-        self.AttendanceReportTable.column("Course", width = 100)
         self.AttendanceReportTable.column("Attendance Status", width = 100)
 
         self.AttendanceReportTable.pack(fill = BOTH, expand = 1)
@@ -1099,19 +1119,17 @@ class Attendance(tk.Frame):
         cursor_row = self.AttendanceReportTable.focus()
         content = self.AttendanceReportTable.item(cursor_row)
         rows = content['values']
-        self.var_atten_id.set(rows[0])
-        self.var_atten_name.set(rows[1])
+        self.var_atten_name.set(rows[0])
+        self.var_atten_time.set(rows[1])
         self.var_atten_date.set(rows[2])
-        self.var_atten_time.set(rows[3])
-        self.var_atten_course.set(rows[4])
-        self.var_atten_status.set(rows[5])
+        self.var_atten_status.set(rows[3])
 
     def reset_data(self):
-        self.var_atten_id.set("")
+        # self.var_atten_id.set("")
         self.var_atten_name.set("")
         self.var_atten_date.set("")
         self.var_atten_time.set("")
-        self.var_atten_course.set("")
+        # self.var_atten_course.set("")
         self.var_atten_status.set("")
         # ===== Fetching Data =====
 ############################# End of Attendance Page #####################################################
@@ -1151,82 +1169,150 @@ class Face_Recognition(tk.Frame):
     
 
     # ===== For Attendance =====
-    def mark_attendance(self, n, i, c):
-        with open("Attendance Report.csv", "r+", newline = "\n") as f:
-            myDataList = f.readlines()
-            name_list = []
-            for line in myDataList:
-                entry = line.split((", "))
-                name_list.append(entry[0])
-            if((n not in name_list) and (i not in name_list) and (c not in name_list)):
-                now = datetime.now()
-                d1 = now.strftime("%d/ %m/ %Y")
-                dtString = now.strftime("%H: %M: %S")
-                f.writelines(f"\n{n}, {i}, {c}, {dtString}, {d1}, Present")
+    # def mark_attendance(self, n, i, c):
+    #     with open("Attendance Report.csv", "r+", newline = "\n") as f:
+    #         myDataList = f.readlines()
+    #         name_list = []
+    #         for line in myDataList:
+    #             entry = line.split((", "))
+    #             name_list.append(entry[0])
+    #         if((n not in name_list) and (i not in name_list) and (c not in name_list)):
+    #             now = datetime.now()
+    #             d1 = now.strftime("%d/ %m/ %Y")
+    #             dtString = now.strftime("%H: %M: %S")
+    #             f.writelines(f"\n{n}, {i}, {c}, {dtString}, {d1}, Present")
      # ===== For Attendance =====
-
     
-    # ===== Face Recognition Function =====
     def face_recog(self):
-        def draw_boundary(img, classifier, scaleFactor, minNeighbors, color, text, clf):
-            gray_image = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
-            features = classifier.detectMultiScale(gray_image, scaleFactor, minNeighbors)
+        path = (r"Data")
+        images = []
+        classNames = []
+        myList = os.listdir(path)
+        print(myList)
+        for cl in myList:
+            curImg = cv2.imread(f'{path}/{cl}')
+            images.append(curImg)
+            classNames.append(os.path.splitext(cl)[0])
+
+        def findEncodings(images):
+            encodeList = []
+            for img in images:
+                    img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
+                    encode = face_recognition.face_encodings(img)[0]
+                    encodeList.append(encode)
+            return encodeList
+        encodeListKnown = findEncodings(images)
+        def markAttendance(name):
+            filename = 'Attendance Report.csv'
             
-            coord = []
+            if not os.path.exists(filename):
+                with open(filename, 'w') as f:
+                    f.write('Name,Time\n')
 
-            for (x, y, w, h) in features:
-                cv2.rectangle(img, (x, y),(x + w, y +h),(0,255,0),3)
-                id, predict = clf.predict(gray_image[y:y + h, x: x + w])
-                confidence = int((100 * (1-predict / 300)))
-                
-                conn = mysql.connector.connect(host = "localhost", username = "root", password = "PunnSxG@2806", database = "face_recognition")
-                my_cursor = conn.cursor()
-
-                my_cursor.execute("select student_name from student where student_id = " + str(id))
-                n = my_cursor.fetchone()
-                n = "," . join(n)
-                                
-                my_cursor.execute("select student_id from student where student_id = " + str(id))
-                i = my_cursor.fetchone()
-                i = str(i[0])  # convert integer to string
-                                
-                my_cursor.execute("select course from student where student_id = " + str(id))
-                c = my_cursor.fetchone()
-                c = "," . join(c)
-
-                if confidence > 77 :
-                    cv2.putText(img, f"ID:{i}", (x, y - 55), cv2.FONT_ITALIC, 0.8, (255,255,255), 2)
-                    cv2.putText(img, f"Name:{n}", (x, y - 30), cv2.FONT_ITALIC, 0.8, (255,255,255), 2)
-                    cv2.putText(img, f"Course:{c}", (x, y - 5), cv2.FONT_ITALIC, 0.8, (255,255,255), 2)
-                    self.mark_attendance(n, i, c)
-                else:
-                    cv2.rectangle(img, (x, y), (x + w, y +h), (0,0,255), 3)
-                    cv2.putText(img, "Unknown Face", (x, y - 55), cv2.FONT_ITALIC, 0.8, (255,255,255), 2)
-                coord = [x, y, w, h]
-            return coord
-
-        def recognize(img, clf, faceCascade):
-            coord = draw_boundary(img, faceCascade, 1.1, 10, (255, 255, 255), "Face", clf)
-            return img
-
-        faceCascade = cv2.CascadeClassifier("haarcascade_frontalface_default.xml")   
-        clf = cv2.face.LBPHFaceRecognizer_create()
-        clf.read("classifier.xml")
-
-        # video_cap = cv2.VideoCapture(url)
-        video_cap = cv2.VideoCapture(0)
+            with open(filename, 'r+') as f:
+                myDataList = f.readlines()
+                nameList = []
+                for line in myDataList:
+                    entry = line.split(',')
+                    nameList.append(entry[0])
+                if name not in nameList:
+                    now = datetime.now()
+                    d1 = now.strftime("%d/ %m/ %Y")
+                    dtString = now.strftime('%H:%M:%S')
+                    f.writelines(f'\n{name},{dtString}, {d1}, Present')
+                    messagebox.showinfo("Attendance marked", "Attendance marked.")
+        cap = cv2.VideoCapture(0)
 
         while True:
-            ret, img = video_cap.read()
-            img = recognize(img, clf, faceCascade)
-            cv2.imshow("Welcome to face recognition", img)
-            
-            if cv2.waitKey(1) == 13:
-                break
-        video_cap.release()
-        cv2.destroyAllWindows()
-############################# End of Face Recognition Page #####################################################
+            success, img = cap.read()
+            imgS = cv2.resize(img, (0, 0), None, 0.25, 0.25)
+            imgS = cv2.cvtColor(imgS, cv2.COLOR_BGR2RGB)
 
+            facesCurFrame = face_recognition.face_locations(imgS)
+            encodesCurFrame = face_recognition.face_encodings(imgS, facesCurFrame)
+
+            for encodeFace, faceLoc in zip(encodesCurFrame, facesCurFrame):
+                matches = face_recognition.compare_faces(encodeListKnown, encodeFace)
+                faceDis = face_recognition.face_distance(encodeListKnown, encodeFace)
+                matchIndex = np.argmin(faceDis)
+
+                if matches[matchIndex]:
+                    name = classNames[matchIndex].upper()
+                    y1, x2, y2, x1 = faceLoc
+                    x1, y1, x2, y2 = x1*4, y1*4, x2*4, y2*4
+                    cv2.rectangle(img, (x1, y1), (x2, y2), (0, 255, 0), 2)
+                    cv2.rectangle(img, (x1, y2-35), (x2, y2), (0, 255, 0), cv2.FILLED)
+                    cv2.putText(img, name, (x1+6, y2-6), cv2.FONT_HERSHEY_COMPLEX, 1, (255, 255, 255), 2)
+                    markAttendance(name)
+            cv2.imshow('Webcam', img)
+
+            if cv2.waitKey(1) == 13:
+                        break
+        cap.release()
+        cv2.destroyAllWindows()
+
+    # # ===== Face Recognition Function =====
+    # def face_recog(self):
+    #     def draw_boundary(img, classifier, scaleFactor, minNeighbors, color, text, clf):
+    #         gray_image = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+    #         features = classifier.detectMultiScale(gray_image, scaleFactor, minNeighbors)
+                    
+    #         coord = []
+
+    #         for (x, y, w, h) in features:
+    #             cv2.rectangle(img, (x, y),(x + w, y +h),(0,255,0),3)
+    #             id, predict = clf.predict(gray_image[y:y + h, x: x + w])
+    #             confidence = int((100 * (1-predict / 300)))
+                        
+    #             conn = mysql.connector.connect(host = "localhost", username = "root", password = "PunnSxG@2806", database = "face_recognition")
+    #             my_cursor = conn.cursor()
+
+    #             my_cursor.execute("select student_name from student where student_id = " + str(id))
+    #             n = my_cursor.fetchone()
+                
+    #             if n is not None:
+    #                 n = "," . join(n)
+    #                 my_cursor.execute("select student_id from student where student_id = " + str(id))
+    #                 i = my_cursor.fetchone()
+    #                 i = str(i[0])  # convert integer to string
+                                    
+    #                 my_cursor.execute("select course from student where student_id = " + str(id))
+    #                 c = my_cursor.fetchone()
+    #                 c = "," . join(c)
+
+    #                 if confidence > 99 :
+    #                     cv2.putText(img, f"ID:{i}", (x, y - 55), cv2.FONT_ITALIC, 0.8, (255,255,255), 2)
+    #                     # cv2.putText(img, f"Name:{n}", (x, y - 30), cv2.FONT_ITALIC, 0.8, (255,255,255), 2)
+    #                     cv2.putText(img, f"Course:{c}", (x, y - 5), cv2.FONT_ITALIC, 0.8, (255,255,255), 2)
+    #                     self.mark_attendance(n, i, c)
+    #                 else:
+    #                     cv2.rectangle(img, (x, y), (x + w, y +h), (0,0,255), 3)
+    #                     cv2.putText(img, "Unknown Face", (x, y - 55), cv2.FONT_ITALIC, 0.8, (255,255,255), 2)
+    #                 coord = [x, y, w, h]
+    #         return coord
+
+
+    #     def recognize(img, clf, faceCascade):
+    #         coord = draw_boundary(img, faceCascade, 1.1, 10, (255, 255, 255), "Face", clf)
+    #         return img
+
+    #     faceCascade = cv2.CascadeClassifier("haarcascade_frontalface_default.xml")   
+    #     clf = cv2.face.LBPHFaceRecognizer_create()
+    #     clf.read("classifier.xml")
+
+    #     # video_cap = cv2.VideoCapture(url)
+    #     video_cap = cv2.VideoCapture(0)
+
+    #     while True:
+    #         ret, img = video_cap.read()
+    #         img = recognize(img, clf, faceCascade)
+    #         cv2.imshow("Welcome to face recognition", img)
+            
+    #         if cv2.waitKey(1) == 13:
+    #             break
+    #     video_cap.release()
+    #     cv2.destroyAllWindows()
+############################# End of Face Recognition Page #####################################################
 class Manual(tk.Frame):
     def __init__(self, parent, controller):
         tk.Frame.__init__(self, parent)
