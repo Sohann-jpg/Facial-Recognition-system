@@ -13,7 +13,7 @@ class Student:
         self.root.geometry("1530x790+0+0")
         self.root.title("Face Recognition System")
 
-####Variables####
+        ####Variables####
         self.var_course = StringVar()
         self.var_year = StringVar()
         self.var_semester = StringVar()
@@ -42,34 +42,61 @@ class Student:
         title_lbl = Label(bg_img,text = "Student Details", font = ("open sans", 30), bg = "white", fg = "Black")
         title_lbl.place(x = -100, y = 0, width = 1800, height = 40)
 
-        # back_button = Button(bg_img, text = "Back", font = ("Helvetica", 10), bd = 2, relief = RIDGE, width = 13, bg = "#117c9d", fg = "black")
-        # back_button.place(x = 1010, y = 0, width = 120, height = 40)
-        # ===== Header and background images =====
+
+        # ===== Work Frames =====
+        #Adding a frame
+        main_frame = Frame(bg_img, bd = 2, bg = "white")
+        main_frame.place(x = 25, y = 50, width = 1230, height = 480)
+        # left label frame
+        Left_frame = LabelFrame(main_frame, bd = 2, bg = "white", relief = RAISED, font = ("Sans Serif", 12))
+        Left_frame.place(x = 10, y = 10, width = 580, height = 450)
+    
         # Right label frame
-        Right_frame = LabelFrame(self.root, bd = 2, bg = "white", relief = RAISED, text = "Student Details", font = ("Sans Serif", 12))
-        Right_frame.place(x = 0, y = 175, width = 1540, height = 655)
+        Right_frame = LabelFrame(main_frame, bd = 2, bg = "white", relief = RAISED, text = "Student Details", font = ("Sans Serif", 12))
+        Right_frame.place(x = 630, y = 10, width = 580, height = 450)
 
         #=====Search Frame=====
-        search_frame = LabelFrame(Right_frame, bd = 2, bg = "white", relief = RIDGE, text = "Search", font = ("Sans Serif", 12))
-        search_frame.place(x = 5, y = 10, width = 1520, height = 70)
+        search_frame = LabelFrame(Left_frame, bd = 2, bg = "white", relief = RIDGE, text = "Search", font = ("Sans Serif", 12))
+        search_frame.place(x = 5, y = 10, width = 565, height = 70)
         search_label = Label(search_frame, text = "Search By: ", font = ("Sans Serif", 12), bg = "white")
         search_label.grid(row = 0, column = 0, padx = 5,  sticky = W)
-
-        # Combo Boxes
-        search_combo = ttk.Combobox(search_frame, font = ("Sans Serif", 12), state = "readonly", width = 10)
-        search_combo["values"] = ("Select", "Name", "ID", "Email")
-        search_combo.current(0)
-        search_combo.grid(row = 0, column = 1, padx = 2, pady = 5, sticky = W)
-
         # Entry Fields
         search_entry = ttk.Entry(search_frame, width = 15, font = ("Sans Serif", 12))
-        search_entry.grid(row = 0, column = 3, pady = 5, sticky = W)
+        search_entry.grid(row = 0, column = 2, pady = 10, sticky = W)
 
         # Buttons
-        searchbtn = Button(search_frame, text = "Search", width = 10, font = ("Sans Serif", 12), bg = "aqua", fg = "black")
-        searchbtn.grid(row = 0, column = 4, padx = 2)
-        showallbtn = Button(search_frame, text = "Show All", width = 10, font = ("Sans Serif", 12), bg = "aqua", fg = "black")
-        showallbtn.grid(row = 0, column = 5, padx = 2)
+        searchbtn = Button(search_frame, text = "Search", width = 15, font = ("Sans Serif", 12), bg = "aqua", fg = "black")
+        searchbtn.grid(row = 0, column = 3, padx = 2)
+
+        # ===== Table Frame ====
+        table_frame = Frame(Right_frame, bd = 2, bg = "white", relief = RIDGE)
+        table_frame.place(x = 5, y = 10, width = 565, height = 400)
+
+        # ===== Scroll bar =====
+        Scroll_x = ttk.Scrollbar(table_frame, orient = HORIZONTAL)
+        Scroll_y = ttk.Scrollbar(table_frame, orient = VERTICAL)
+        # ===== Scroll bar =====
+
+        # ===== Table Contents =====
+        self.student_table = ttk.Treeview(table_frame, column = ("Student ID", "Name", "Course"), xscrollcommand = Scroll_x.set, yscrollcommand = Scroll_y.set)
+        Scroll_x.pack(side = BOTTOM, fill = X)
+        Scroll_y.pack(side = RIGHT, fill = Y)
+        Scroll_x.config(command = self.student_table.xview)
+        Scroll_y.config(command = self.student_table.yview)
+        self.student_table.heading("Student ID", text = "Student ID")
+        self.student_table.heading("Name", text = "Name")
+        self.student_table.heading("Course", text = "Course")
+        self.student_table["show"] = "headings"
+
+        self.student_table.column("Student ID", width = 100)
+        self.student_table.column("Name", width = 100)
+        self.student_table.column("Course", width = 100)
+        self.student_table.pack(fill = BOTH, expand = 1)
+        self.student_table.bind("<ButtonRelease>")
+        # ===== Table Contents =====
+
+    def search_records(self):
+        pass
 
 if __name__ == "__main__":
     root = Tk()
