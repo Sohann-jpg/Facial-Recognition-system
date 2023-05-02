@@ -14,18 +14,10 @@ class Student:
         self.root.title("Face Recognition System")
 
         ####Variables####
-        self.var_course = StringVar()
-        self.var_year = StringVar()
-        self.var_semester = StringVar()
-        self.var_level = StringVar()
-        self.var_sID = StringVar()
-        self.var_sName = StringVar()
-        self.var_gender = StringVar()
-        self.var_email = StringVar()
-        self.var_pName = StringVar()
-        self.var_address = StringVar()
-        self.var_pNum = StringVar()
-        self.var_radio1 = StringVar()
+        self.var_search_records = StringVar()
+        self.var_search_criteria = StringVar()
+
+        
         # ===== Header and background images =====
         img = Image.open(r"App-Images\Header.jpg")
         img = img.resize((1550, 130), Image.ANTIALIAS)
@@ -58,15 +50,28 @@ class Student:
         #=====Search Frame=====
         search_frame = LabelFrame(Left_frame, bd = 2, bg = "white", relief = RIDGE, text = "Search", font = ("Sans Serif", 12))
         search_frame.place(x = 5, y = 10, width = 565, height = 70)
-        search_label = Label(search_frame, text = "Search By: ", font = ("Sans Serif", 12), bg = "white")
-        search_label.grid(row = 0, column = 0, padx = 5,  sticky = W)
-        # Entry Fields
-        search_entry = ttk.Entry(search_frame, width = 15, font = ("Sans Serif", 12))
-        search_entry.grid(row = 0, column = 2, pady = 10, sticky = W)
+
+          # Course
+        search_label = Label(search_frame, text="Search By:", font=("Sans Serif", 12), bg="white")
+        search_label.grid(row=0, column=0, padx=5, sticky=W)
+
+        search_entry = ttk.Combobox(search_frame, font=("Sans Serif", 12), state="readonly", width=15, textvariable=self.var_search_criteria)
+        search_entry["values"] = ("Select Field", "ID", "Name")
+        search_entry.current(0)
+        search_entry.grid(row=0, column=2, padx=2, pady=5, sticky=W)
+
+        search_records_entry = ttk.Entry(search_frame, textvariable=self.var_search_records, width=15, font=("Sans Serif", 12))
+        search_records_entry.grid(row=0, column=3, pady=5, sticky=W)
+
 
         # Buttons
-        searchbtn = Button(search_frame, text = "Search", width = 15, font = ("Sans Serif", 12), bg = "aqua", fg = "black")
-        searchbtn.grid(row = 0, column = 3, padx = 2)
+        searchbtn = Button(search_frame, text = "Search", command = self.search_records, width = 15, font = ("Sans Serif", 12), bg = "#117c9d", fg = "black")
+        searchbtn.grid(row = 0, column = 4, padx = 2)
+
+         # Reset
+        resetbtn = Button(Left_frame, text = "Reset", command = self.reset_treeview, width = 29, font = ("Sans Serif", 12), bg = "#117c9d", fg = "black")
+        resetbtn.place(x = 150, y = 415)
+        # ===== Functional Buttons 1.0 =====
 
         # ===== Table Frame ====
         table_frame = Frame(Right_frame, bd = 2, bg = "white", relief = RIDGE)
@@ -96,7 +101,44 @@ class Student:
         # ===== Table Contents =====
 
     def search_records(self):
-        pass
+        search_criteria = self.var_search_criteria.get()
+        search_value = self.var_search_records.get()
+        
+        # Validate search value
+        if not search_value:
+            messagebox.showerror("Error", "Please enter a search value")
+            return
+
+        conn = mysql.connector.connect(host="localhost", username="root", password="PunnSxG@2806", database="face_recognition")
+        my_cursor = conn.cursor()
+
+        query = ""
+        if search_criteria == "ID":
+            query = "SELECT * FROM attendance WHERE student_ID LIKE %s"
+        elif search_criteria == "Name":
+            query = "SELECT * FROM attendance WHERE name LIKE %s"
+
+        if query:
+            my_cursor.execute(query, (search_value, ))
+            records = my_cursor.fetchall()
+
+            if records:
+                self.student_table.delete(*self.student_table.get_children())
+                for record in records:
+                    self.student_table.insert("", END, values=record)
+
+                count = len(records)
+                messagebox.showinfo("Result", f"The student is present for {count} days")
+            else:
+                messagebox.showinfo("Result", "No records found")
+
+        conn.close()
+
+# Reset Treeview
+
+    def reset_treeview(self):
+        for record in self.student_table.get_children():
+            self.student_table.delete(record)
 
 if __name__ == "__main__":
     root = Tk()
