@@ -17,8 +17,7 @@ import time
 import random
 import face_recognition
 url = 'http://100.22.158.103:8080/video' #College
-# url = 'http://192.168.18.32:8080/video' #Home
-
+# # url = 'http://192.168.18.32:8080/video' #Home
 
 class Login(tk.Frame):
     def __init__(self, parent, controller):
@@ -49,18 +48,18 @@ class Login(tk.Frame):
         title_lbl.place(x = -100, y = 0, width = 1800, height = 45)
 
         self.frame = Frame(bg_img, bg = '#0a384c')
-        self.frame.place(x = 480, y = 70, width = 340, height = 450)
+        self.frame.place(x = 600, y = 70, width = 340, height = 450)
         user_img = Image.open("App-Images/user.png")
         user_img = user_img.resize((100, 100), Image.ANTIALIAS)
         self.photoimage1 = ImageTk.PhotoImage(user_img)
         lblimg1 = tk.Label(self, image = self.photoimage1, bg = "#117c9d", borderwidth = 1)
-        lblimg1.place(x = 610, y = 220, width = 100, height = 100)
+        lblimg1.place(x = 730, y = 220, width = 100, height = 100)
 
         get_str = tk.Label(self.frame, text = "Login", font = ("Helvetica", 20), fg = "white", bg = "#0a384c")
         get_str.place(x = 140, y = 130)
 
         # ===== Labels =====
-        username = tk.Label(self.frame, text = "Username", font = ("Helvetica", 15), fg = "white", bg = "#0a384c")
+        username = tk.Label(self.frame, text = "Email", font = ("Helvetica", 15), fg = "white", bg = "#0a384c")
         username.place(x = 48, y = 180)
         self.txtuser = ttk.Entry(self.frame, font = ("Helvetica", 20))
         self.txtuser.place(x = 50, y = 210, width = 200)
@@ -97,6 +96,8 @@ class Login(tk.Frame):
             row = my_cursor.fetchone()
             if row == None:
                 messagebox.showerror("Error", "Invalid username or password")
+            elif '@' not in self.txtuser.get() or '.' not in self.txtuser.get() or 'np' not in self.txtuser.get():
+                messagebox.showerror("Error", "Wrong email format")
             else:
                 command = lambda: controller.show_frame(Main)
                 command()
@@ -253,12 +254,12 @@ class Register(tk.Frame):
         # ROW 4
         pswd = tk.Label(inside_left_frame, text = "Password", font = ("Sans Serif", 12), bg = "white")
         pswd.place(x = 5, y = 180)
-        self.txt_pswd = ttk.Entry(inside_left_frame, textvariable = self.var_pass, font = ("Sans Serif", 12))
+        self.txt_pswd = ttk.Entry(inside_left_frame, show = "*", textvariable = self.var_pass, font = ("Sans Serif", 12))
         self.txt_pswd.place(x = 5, y = 210, width = 250)
 
         confirm_pswd = tk.Label(inside_left_frame, text = "Confirm Password", font = ("Sans Serif", 12), bg = "white")
         confirm_pswd.place(x = 280, y = 180)
-        self.txt_confirm_pswd = ttk.Entry(inside_left_frame, textvariable = self.var_conpass, font = ("Sans Serif", 12))
+        self.txt_confirm_pswd = ttk.Entry(inside_left_frame, show = "*", textvariable = self.var_conpass, font = ("Sans Serif", 12))
         self.txt_confirm_pswd.place(x = 280, y = 210, width = 250)
         
         # ===== Functional Buttons 1.0 =====
@@ -281,6 +282,8 @@ class Register(tk.Frame):
             messagebox.showerror("Error", "All fields required")
         elif self.var_pass.get() != self.var_conpass.get():
             messagebox.showerror("Error", "Password did not match")
+        elif '@' not in self.var_email.get() or '.' not in self.var_email.get() or 'np' not in self.var_email.get():
+            messagebox.showerror("Error", "Wrong email format")
         else:
             conn = mysql.connector.connect(host = "localhost", username = "root", password = "PunnSxG@2806", database = "face_recognition")
             my_cursor = conn.cursor()
@@ -339,80 +342,66 @@ class Main(tk.Frame):
         img2 = img2.resize((220, 220), Image.ANTIALIAS)
         self.photoimg2 = ImageTk.PhotoImage(img2)
         b1 = tk.Button(bg_img, image = self.photoimg2)
-        b1.place(x = 80, y = 50, width = 220, height = 180)
+        b1.place(x = 400, y = 50, width = 220, height = 180)
         # Text: Student Details
         b1_1 = tk.Button(bg_img, text = "Student Details", cursor = "hand2", command = lambda: controller.show_frame(Student), 
         font = ("open sans", 15), bg = "#117c9d", fg = "Black")
-        b1_1.place(x = 80, y = 230, width = 220, height = 40)
+        b1_1.place(x = 400, y = 230, width = 220, height = 40)
 
         # Face detection button
         img3 = Image.open(r"App-Images\Face-recognition.jpg")
         img3 = img3.resize((220, 220), Image.ANTIALIAS)
         self.photoimg3 = ImageTk.PhotoImage(img3)
         b2 = tk.Button(bg_img, image = self.photoimg3)
-        b2.place(x = 350, y = 50, width = 220, height = 180)
+        b2.place(x = 670, y = 50, width = 220, height = 180)
         # Text: Face Recognition
         b2_2 = tk.Button(bg_img, text = "Face Recognition", command = lambda: controller.show_frame(Face_Recognition), cursor = "hand2", font = ("open sans", 15), 
         bg = "#117c9d", fg = "Black")
-        b2_2.place(x = 350, y = 230, width = 220, height = 40)
+        b2_2.place(x = 670, y = 230, width = 220, height = 40)
 
         # Attendance Button
         img4 = Image.open(r"App-Images\Attendance.jpg")
         img4 = img4.resize((220, 220), Image.ANTIALIAS)
         self.photoimg4 = ImageTk.PhotoImage(img4)
         b3 = tk.Button(bg_img, image = self.photoimg4)
-        b3.place(x = 620, y = 50, width = 220, height = 180)
+        b3.place(x = 940, y = 50, width = 220, height = 180)
         # Text: Attendance
         b3_3 = tk.Button(bg_img, text = "Attendance", cursor = "hand2", command = lambda: controller.show_frame(Attendance), font = ("open sans", 15), bg = "#117c9d", 
         fg = "Black")
-        b3_3.place(x = 620, y = 230, width = 220, height = 40)
-
-        # Train data button
-        img6 = Image.open(r"App-Images\Train-data.jpg")
-        img6 = img6.resize((220, 220), Image.ANTIALIAS)
-        self.photoimg6 = ImageTk.PhotoImage(img6)
-        b5 = tk.Button(bg_img, image = self.photoimg6)
-        b5.place(x = 890, y = 50, width = 220, height = 180)
-
-        # Text: Train Data
-        b5_5 = tk.Button(bg_img, text = "Train Data", cursor = "hand2", command = lambda: controller.show_frame(Train), 
-        font = ("open sans", 15), bg = "#117c9d", fg = "Black")
-        b5_5.place(x = 890, y = 230, width = 220, height = 40)
+        b3_3.place(x = 940, y = 230, width = 220, height = 40)
 
         # Manual Attendance
         img5 = Image.open(r"App-Images\manual-atten.png")
         img5 = img5.resize((220, 220), Image.ANTIALIAS)
         self.photoimg5 = ImageTk.PhotoImage(img5)
         b5 = tk.Button(bg_img, image = self.photoimg5)
-        b5.place(x = 230, y = 300, width = 220, height = 180)
-
+        b5.place(x = 400, y = 300, width = 220, height = 180)
         # Manual Attendance
         b5_6 = tk.Button(bg_img, text = "Manual Attendance", cursor = "hand2", command = lambda: controller.show_frame(Manual), 
         font = ("open sans", 15), bg = "#117c9d", fg = "Black")
-        b5_6.place(x = 230, y = 480, width = 220, height = 40)
+        b5_6.place(x = 400, y = 480, width = 220, height = 40)
 
         # Photos button
         img7 = Image.open(r"App-Images\Photos.jpg")
         img7 = img7.resize((220, 220), Image.ANTIALIAS)
         self.photoimg7 = ImageTk.PhotoImage(img7)
         b6 = tk.Button(bg_img, image = self.photoimg7)
-        b6.place(x = 500, y = 300, width = 220, height = 180)
+        b6.place(x = 670, y = 300, width = 220, height = 180)
         # Text: Photos
         b6_6 = tk.Button(bg_img, text = "Photos", cursor = "hand2", command = self.open_img, 
         font = ("open sans", 15), bg = "#117c9d", fg = "Black")
-        b6_6.place(x = 500, y = 480, width = 220, height = 40)
+        b6_6.place(x = 670, y = 480, width = 220, height = 40)
         
         # Logout
         img9 = Image.open(r"App-Images\Exit.jpg")
         img9 = img9.resize((220, 220), Image.ANTIALIAS)
         self.photoimg9 = ImageTk.PhotoImage(img9)
         b8 = tk.Button(bg_img, image = self.photoimg9)
-        b8.place(x = 770, y = 300, width = 220, height = 180)
-
+        b8.place(x = 940, y = 300, width = 220, height = 180)
         # Text: Log Out
         b8_8 = tk.Button(bg_img, text = "Log Out", command=lambda: controller.show_frame(Login), cursor = "hand2", font = ("open sans", 15), 
         bg = "#117c9d", fg = "Black")
-        b8_8.place(x = 770, y = 480, width = 220, height = 40)
+        b8_8.place(x = 940, y = 480, width = 220, height = 40)
         # ===== Menu Section =====
     def open_img(self):
         os.startfile("Data")
@@ -795,77 +784,19 @@ class Student(tk.Frame):
             if not os.path.exists(path):
                 os.makedirs(path)
             cap = cv2.VideoCapture(url)
+            # cap = cv2.VideoCapture(0) For webcam
             success, img = cap.read()
             if success:
-                cv2.imwrite(f'{path}/{name}.jpg', img)
+                cv2.imwrite(f'{path}/{name}.{id}.{course}.jpg', img)
                 tk.messagebox.showinfo("Success", "Photo sample collected successfully")
             cap.release()
             cv2.destroyAllWindows()
         else:
             tk.messagebox.showerror("Error", "Please fill in all fields")
-
     def close(self):
         self.destroy()
         return   
 ############################# End of Student Page #####################################################
-
-class Train(tk.Frame):
-    def __init__(self, parent, controller):
-        tk.Frame.__init__(self, parent)
-        img = Image.open(r"App-Images\Header.jpg")
-        img = img.resize((1550, 130), Image.ANTIALIAS)
-        self.photoimg = ImageTk.PhotoImage(img)
-        f_lbl = Label(self, image = self.photoimg)
-        f_lbl.place(x= -1, y=0)
-
-        # Adding a background image to the application software
-        img1 = Image.open(r"App-Images\Background.webp")
-        img1 = img1.resize((1550, 710), Image.ANTIALIAS)
-        self.photoimg1 = ImageTk.PhotoImage(img1)
-        bg_img = Label(self, image = self.photoimg1)
-        bg_img.place(x = 0, y = 130, width = 1550, height = 710)
-
-        # Adding a text in the application
-        title_lbl = Label(bg_img,text = "Train Data", font = ("open sans", 30), bg = "white", fg = "Black")
-        title_lbl.place(x = -100, y = 0, width = 1800, height = 40)
-
-        back_button = tk.Button(bg_img, text = "Back", command = lambda: controller.show_frame(Main), font = ("Helvetica", 10), bd = 2, relief = RIDGE, width = 13, bg = "#117c9d", fg = "black")
-        back_button.place(x = 1010, y = 0, width = 120, height = 40)
-        # Train data button
-        img6 = Image.open(r"App-Images\Train-data.jpg")
-        img6 = img6.resize((220, 220), Image.ANTIALIAS)
-        self.photoimg6 = ImageTk.PhotoImage(img6)
-        b5 = Button(bg_img, image = self.photoimg6)
-        b5.place(x = 550, y = 50, width = 220, height = 180)
-        # Text: Train Data
-        b5_5 = Button(bg_img, text = "Train Data", cursor = "hand2", command = self.train_classifier, font = ("open sans", 15), bg = "#117c9d", fg = "Black")
-        b5_5.place(x = 550, y = 230, width = 220, height = 40)
-
-    def train_classifier(self):
-        data_dir = ("Data")
-        path = [os.path.join(data_dir, file) for file in os.listdir(data_dir)]
-        faces = []
-        IDs = []
-        for image in path:
-            img = Image.open(image).convert('L')        # Grayscale image
-            imageNP = np.array(img, 'uint8')
-            # id = int(os.path.split(image)[1].split('.')[1])
-            id = str(os.path.split(image)[1].split('.'[0]))
-            # id = int(id_parts[0]) if len(id_parts) > 0 else 0
-            # id = int(os.path.split(image)[1].split('.')[1].split('_')[0])
-            faces.append(imageNP)
-            IDs.append(id)
-            cv2.imshow("Training", imageNP)
-            cv2.waitKey(1) == 13
-        IDs = np.array(IDs)
- 
-    # ===== Training the classifier =====
-        clf = cv2.face.LBPHFaceRecognizer_create()
-        clf.train(faces, IDs)
-        clf.write("classifier.xml")
-        cv2.destroyAllWindows()
-        messagebox.showinfo("Result", "Training dataset completed")
-############################# End of Train Page #####################################################
 
 class Attendance(tk.Frame):
     def __init__(self, parent, controller):
@@ -876,7 +807,8 @@ class Attendance(tk.Frame):
         self.var_atten_time = StringVar()
         # self.var_atten_course = StringVar()
         self.var_atten_status = StringVar()
-
+        self.var_search_records = StringVar()
+        self.var_search_criteria = StringVar()
     # ===== Header and background images =====
         img = Image.open(r"App-Images\Header.jpg")
         img = img.resize((1550, 130), Image.ANTIALIAS)
@@ -894,147 +826,112 @@ class Attendance(tk.Frame):
         title_lbl = Label(bg_img,text = "Attendance Management System", font = ("open sans", 30), bg = "white", fg = "Black")
         title_lbl.place(x = -100, y = 0, width = 1800, height = 40)
         back_button = tk.Button(bg_img, text = "Back", command = lambda: controller.show_frame(Main), font = ("Helvetica", 10), bd = 2, relief = RIDGE, width = 13, bg = "#117c9d", fg = "black")
-        back_button.place(x = 1010, y = 0, width = 120, height = 40)
+        back_button.place(x = 1110, y = 0, width = 120, height = 40)
     # ===== Header and background images =====
-
-
     # ===== Work Frames =====
         #Adding a frame
         main_frame = Frame(bg_img, bd = 2, bg = "white")
         main_frame.place(x = 25, y = 50, width = 1230, height = 480)
         # left label frame
-        Left_frame = LabelFrame(main_frame, bd = 2, bg = "white", relief = RAISED, text = "Student Attendance Details", font = ("Sans Serif", 12))
+        Left_frame = LabelFrame(main_frame, bd = 2, bg = "white", relief = RAISED, font = ("Sans Serif", 12))
         Left_frame.place(x = 10, y = 10, width = 580, height = 450)
-
-        inside_left_frame = Frame(Left_frame, bd = 2, relief = RIDGE, bg = "white")
-        inside_left_frame.place(x = 5, y = 0, width = 560, height = 420)
-        
-        # Name
-        Name_label = Label(inside_left_frame, text = "Name:", font = ("Sans Serif", 12), bg = "white")
-        Name_label.grid(row = 0, column = 2, sticky = W)
-        Name_entry = ttk.Entry(inside_left_frame, width = 15, textvariable = self.var_atten_name, font = ("Sans Serif", 12))
-        Name_entry.grid(row = 0, column = 3, pady = 5, sticky = W)
-
-        # Date
-        Date_label = Label(inside_left_frame, text = "Date:", font = ("Sans Serif", 12), bg = "white")
-        Date_label.grid(row = 1, column = 0, sticky = W)
-        Date_entry = ttk.Entry(inside_left_frame, width = 15, textvariable = self.var_atten_date, font = ("Sans Serif", 12))
-        Date_entry.grid(row = 1, column = 1, pady = 5, sticky = W)
-
-        # Time
-        Time_label = Label(inside_left_frame, text = "Time:", font = ("Sans Serif", 12), bg = "white")
-        Time_label.grid(row = 1, column = 2, sticky = W)
-        Time_entry = ttk.Entry(inside_left_frame, textvariable = self.var_atten_time, width = 15, font = ("Sans Serif", 12))
-        Time_entry.grid(row = 1, column = 3, pady = 5, sticky = W)
-
-        # Attendance Combo
-        Attendance_label = Label(inside_left_frame, text = "Attendance Status:", font = ("Sans Serif", 12), bg = "white")
-        Attendance_label.grid(row = 2, column = 0, sticky = W)
-        self.atten_status = ttk.Combobox(inside_left_frame, textvariable = self.var_atten_status, font = ("Sans Serif", 12), state = "readonly", width = 13)
-        self.atten_status["values"] = ("Stauts", "Present", "Absent")
-        self.atten_status.grid(row = 2, column = 1)
-        self.atten_status.current(0)
-
-        # ===== Functional Buttons 1.0 =====
-        # Buttons Frame
-        btn_frame = Frame(inside_left_frame, bd = 2, relief = RAISED, bg = "white")
-        btn_frame.place(x = 1, y = 372, width = 555, height = 37)
-
-        # Import
-        importbtn = Button(btn_frame, text = "Import CSV", command = self.importCSV, width = 18, font = ("Sans Serif", 12), bg = "#117c9d", fg = "black")
-        importbtn.grid(row = 0, column = 0, padx= 5)
-
-        # Export
-        exportbtn = Button(btn_frame, text = "Export CSV", command = self.exportCSV, width = 18, font = ("Sans Serif", 12), bg = "#117c9d", fg = "black")
-        exportbtn.grid(row = 0, column = 1, padx= 5)
-
-        # Reset
-        resetbtn = Button(btn_frame, text = "Reset", width = 18, command = self.reset_data, font = ("Sans Serif", 12), bg = "#117c9d", fg = "black")
-        resetbtn.grid(row = 0, column = 3, padx= 5)
-        # ===== Functional Buttons 1.0 =====
-        
+    
         # Right label frame
-        Right_frame = LabelFrame(main_frame, bd = 2, bg = "white", relief = RAISED, text = "Attendance Details", font = ("Sans Serif", 12))
+        Right_frame = LabelFrame(main_frame, bd = 2, bg = "white", relief = RAISED, text = "Student Details", font = ("Sans Serif", 12))
         Right_frame.place(x = 630, y = 10, width = 580, height = 450)
-        
-        table_frame = Frame(Right_frame, bd = 2, relief = RAISED, bg = "white")
-        table_frame.place(x = 5, y = 5, width = 565, height = 380)
 
-        # ===== Scroll Bar and Table =====
+        #=====Search Frame=====
+        search_frame = LabelFrame(Left_frame, bd = 2, bg = "white", relief = RIDGE, text = "Search", font = ("Sans Serif", 12))
+        search_frame.place(x = 5, y = 10, width = 565, height = 70)
+
+          # Course
+        search_label = Label(search_frame, text="Search By:", font=("Sans Serif", 12), bg="white")
+        search_label.grid(row=0, column=0, padx=5, sticky=W)
+
+        search_entry = ttk.Combobox(search_frame, font=("Sans Serif", 12), state="readonly", width=15, textvariable=self.var_search_criteria)
+        search_entry["values"] = ("Select Field", "ID", "Name")
+        search_entry.current(0)
+        search_entry.grid(row=0, column=2, padx=2, pady=5, sticky=W)
+
+        search_records_entry = ttk.Entry(search_frame, textvariable=self.var_search_records, width=15, font=("Sans Serif", 12))
+        search_records_entry.grid(row=0, column=3, pady=5, sticky=W)
+
+
+        # Buttons
+        searchbtn = Button(search_frame, text = "Search", command = self.search_records, width = 15, font = ("Sans Serif", 12), bg = "#117c9d", fg = "black")
+        searchbtn.grid(row = 0, column = 4, padx = 2)
+
+         # Reset
+        resetbtn = Button(Left_frame, text = "Reset", command = self.reset_treeview, width = 29, font = ("Sans Serif", 12), bg = "#117c9d", fg = "black")
+        resetbtn.place(x = 150, y = 415)
+        # ===== Functional Buttons 1.0 =====
+
+        # ===== Table Frame ====
+        table_frame = Frame(Right_frame, bd = 2, bg = "white", relief = RIDGE)
+        table_frame.place(x = 5, y = 10, width = 565, height = 400)
+
+        # ===== Scroll bar =====
         Scroll_x = ttk.Scrollbar(table_frame, orient = HORIZONTAL)
         Scroll_y = ttk.Scrollbar(table_frame, orient = VERTICAL)
+        # ===== Scroll bar =====
 
-        self.AttendanceReportTable = ttk.Treeview(table_frame, column = ("Name", "Time", "Date", "Attendance Status"), xscrollcommand = Scroll_x.set, yscrollcommand = Scroll_y.set)
-
+        # ===== Table Contents =====
+        self.student_table = ttk.Treeview(table_frame, column = ("Student ID", "Name", "Course"), xscrollcommand = Scroll_x.set, yscrollcommand = Scroll_y.set)
         Scroll_x.pack(side = BOTTOM, fill = X)
         Scroll_y.pack(side = RIGHT, fill = Y)
+        Scroll_x.config(command = self.student_table.xview)
+        Scroll_y.config(command = self.student_table.yview)
+        self.student_table.heading("Student ID", text = "Student ID")
+        self.student_table.heading("Name", text = "Name")
+        self.student_table.heading("Course", text = "Course")
+        self.student_table["show"] = "headings"
 
-        Scroll_x.config(command = self.AttendanceReportTable.xview)
-        Scroll_y.config(command = self.AttendanceReportTable.yview)
+        self.student_table.column("Student ID", width = 100)
+        self.student_table.column("Name", width = 100)
+        self.student_table.column("Course", width = 100)
+        self.student_table.pack(fill = BOTH, expand = 1)
+        self.student_table.bind("<ButtonRelease>")
+        # ===== Table Contents =====
 
-        self.AttendanceReportTable.heading("Name", text = "Name")
-        self.AttendanceReportTable.heading("Time", text = "Time")
-        self.AttendanceReportTable.heading("Date", text= "Date")
-        self.AttendanceReportTable.heading("Attendance Status", text = "Attendance Status")
-
-        self.AttendanceReportTable["show"] = "headings"
+    def search_records(self):
+        search_criteria = self.var_search_criteria.get()
+        search_value = self.var_search_records.get()
         
-        self.AttendanceReportTable.column("Name", width = 100)
-        self.AttendanceReportTable.column("Time", width = 100)
-        self.AttendanceReportTable.column("Date", width = 100)
-        self.AttendanceReportTable.column("Attendance Status", width = 100)
+        # Validate search value
+        if not search_value:
+            messagebox.showerror("Error", "Please enter a search value")
+            return
 
-        self.AttendanceReportTable.pack(fill = BOTH, expand = 1)
-        self.AttendanceReportTable.bind("<ButtonRelease>", self.get_cursor)
+        conn = mysql.connector.connect(host="localhost", username="root", password="PunnSxG@2806", database="face_recognition")
+        my_cursor = conn.cursor()
 
-        # ===== Fetching Data =====
-    def fetch_data(self, rows):
-        self.AttendanceReportTable.delete(*self.AttendanceReportTable.get_children())
-        for i in rows:
-            self.AttendanceReportTable.insert("", END, values = i)
-        # importCSV
-    def importCSV(self):
-        global mydata
-        mydata = []
-        fln = filedialog.askopenfilename(initialdir = os.getcwd(), title = "Open CSV", filetypes = (("CSV FILE", "*.csv"), ("All File", "*.*")), parent = self)
-        with open(fln) as myfile:
-            csvread = csv.reader(myfile, delimiter = ",")
-            for i in csvread:
-                mydata.append(i)
-            self.fetch_data(mydata)   
-        # export CSV
-    def exportCSV(self):
-        global mydata
-        try:
-            if len(mydata) < 1:
-                messagebox.showerror("Error", "No data to export", parent = self)
-                return False
-            fln = filedialog.asksaveasfilename(initialdir = os.getcwd(), title = "Open CSV", filetypes = (("CSV FILE", "*.csv"), ("All File", "*.*")), parent = self)
-            with open(fln, mode = "w", newline = "") as myfile:
-                exp_write = csv.writer(myfile, delimiter = ",")
-                for i in mydata:
-                    exp_write.writerow(i)
-                messagebox.showinfo("Success", "Data exported successfully to " + os.path.basename(fln))
-        except Exception as es:
-                messagebox.showerror("Error", f"Due to: {str(es)}", parent = self)
+        query = ""
+        if search_criteria == "ID":
+            query = "SELECT * FROM attendance WHERE student_ID LIKE %s"
+        elif search_criteria == "Name":
+            query = "SELECT * FROM attendance WHERE name LIKE %s"
 
-    def get_cursor(self, event = ""):
-        cursor_row = self.AttendanceReportTable.focus()
-        content = self.AttendanceReportTable.item(cursor_row)
-        rows = content['values']
-        self.var_atten_name.set(rows[0])
-        self.var_atten_time.set(rows[1])
-        self.var_atten_date.set(rows[2])
-        self.var_atten_status.set(rows[3])
+        if query:
+            my_cursor.execute(query, (search_value, ))
+            records = my_cursor.fetchall()
 
-    def reset_data(self):
-        # self.var_atten_id.set("")
-        self.var_atten_name.set("")
-        self.var_atten_date.set("")
-        self.var_atten_time.set("")
-        # self.var_atten_course.set("")
-        self.var_atten_status.set("")
-        # ===== Fetching Data =====
+            if records:
+                self.student_table.delete(*self.student_table.get_children())
+                for record in records:
+                    self.student_table.insert("", END, values=record)
+
+                count = len(records)
+                messagebox.showinfo("Result", f"The student is present for {count} days")
+            else:
+                messagebox.showinfo("Result", "No records found")
+
+        conn.close()
+
+# Reset Treeview
+
+    def reset_treeview(self):
+        for record in self.student_table.get_children():
+            self.student_table.delete(record)
 ############################# End of Attendance Page #####################################################
 
 class Face_Recognition(tk.Frame):
@@ -1068,46 +965,62 @@ class Face_Recognition(tk.Frame):
         # Text: Face Recognition
         b5_5 = Button(bg_img, text = "Face Recognition", cursor = "hand2", command = self.face_recog, font = ("open sans", 15), bg = "#117c9d", fg = "Black")
         b5_5.place(x = 550, y = 230, width = 220, height = 40)
-    
+
     def face_recog(self):
         path = (r"Data")
         images = []
         classNames = []
+        ID_list = []
+        Course_list = []
         myList = os.listdir(path)
-        # print(myList)
+
         for cl in myList:
             curImg = cv2.imread(f'{path}/{cl}')
             images.append(curImg)
-            classNames.append(os.path.splitext(cl)[0])
+            filename_parts = os.path.splitext(cl)[0].split('.')  # Split filename by '.'
+            ID = filename_parts[1]  # Extract ID (second element)
+            Course = filename_parts[2]  # Extract Course (third element)
+            classNames.append(filename_parts[0])  # Append the name part of the filename (first element) to classNames list
+            ID_list.append(ID)  # Append ID to ID_list
+            Course_list.append(Course)  # Append Course to Course_list
 
         def findEncodings(images):
             encodeList = []
             for img in images:
-                    img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
-                    encode = face_recognition.face_encodings(img)[0]
-                    encodeList.append(encode)
+                img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
+                encode = face_recognition.face_encodings(img)[0]
+                encodeList.append(encode)
             return encodeList
+    
         encodeListKnown = findEncodings(images)
-        def markAttendance(name):
-            filename = 'Attendance Report.csv'
-            
-            if not os.path.exists(filename):
-                with open(filename, 'w') as f:
-                    f.write('Name,Time\n')
 
-            with open(filename, 'r+') as f:
-                myDataList = f.readlines()
-                nameList = []
-                for line in myDataList:
-                    entry = line.split(',')
-                    nameList.append(entry[0])
-                if name not in nameList:
-                    now = datetime.now()
-                    d1 = now.strftime("%d/ %m/ %Y")
-                    dtString = now.strftime('%H:%M:%S')
-                    f.writelines(f'\n{name},{dtString}, {d1}, Present')
-                    messagebox.showinfo("Attendance marked", "Attendance marked.")
+        def markAttendance(name):
+            now = datetime.now()
+            d1 = now.strftime("%d/ %m/ %Y")
+            dtString = now.strftime('%H:%M:%S')
+            student_ID = ID
+            student_Course = Course
+            attendance_status = "Present"
+
+            # SQL query to insert data into the attendance table
+            mydb = mysql.connector.connect(host="localhost", user="root", password="PunnSxG@2806", database="face_recognition")
+            mycursor = mydb.cursor()
+            # sql = "INSERT INTO attendance (student_ID, name, student_Course, Time, Date, Attendance Status) VALUES (%s, %s, %s, %s, %s, %s)"
+            # val = (student_ID, name, student_Course, dtString, d1, attendance_status)
+            mycursor.execute("insert into attendance values(%s,%s,%s,%s,%s,%s)",(
+                                                                                student_ID,
+                                                                                name,
+                                                                                student_Course,
+                                                                                dtString,
+                                                                                d1,
+                                                                                attendance_status                                                                                     
+                                                                            ))
+            mydb.commit()
+            mydb.close()
+            messagebox.showinfo("Attendance marked", "Attendance marked.")
+
         cap = cv2.VideoCapture(url)
+        # cap = cv2.VideoCapture(0) For webcam
 
         while True:
             success, img = cap.read()
@@ -1124,16 +1037,20 @@ class Face_Recognition(tk.Frame):
 
                 if matches[matchIndex]:
                     name = classNames[matchIndex].upper()
+                    ID = ID_list[matchIndex]
+                    Course = Course_list[matchIndex].upper()
                     y1, x2, y2, x1 = faceLoc
                     x1, y1, x2, y2 = x1*4, y1*4, x2*4, y2*4
                     cv2.rectangle(img, (x1, y1), (x2, y2), (0, 255, 0), 2)
                     cv2.rectangle(img, (x1, y2-35), (x2, y2), (0, 255, 0), cv2.FILLED)
-                    cv2.putText(img, name, (x1+6, y2-6), cv2.FONT_HERSHEY_COMPLEX, 1, (255, 255, 255), 2)
+                    cv2.putText(img, f'{name} ({ID}, {Course})', (x1+6, y2-6), cv2.FONT_HERSHEY_COMPLEX, 1, (255, 255, 255), 2)
                     markAttendance(name)
+
             cv2.imshow('Webcam', img)
 
             if cv2.waitKey(1) == 13:
-                        break
+                break
+
         cap.release()
         cv2.destroyAllWindows()
 ############################# End of Face Recognition Page #####################################################
@@ -1352,7 +1269,7 @@ class Application(tk.Tk):
         window.grid_columnconfigure(0, minsize = 1920)
 
         self.frames = {}
-        for F in (Login, Register, Main, Student, Train, Attendance, Face_Recognition, Manual):
+        for F in (Login, Register, Main, Student, Attendance, Face_Recognition, Manual):
             frame = F(window, self)
             self.frames[F] = frame
             frame.grid(row = 0, column = 0, sticky = "nsew")
